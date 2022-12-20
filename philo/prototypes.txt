@@ -4,12 +4,13 @@ void	*init_philo(t_args *args);
 void	ft_puterror(int flag);
 void	*free_philo(t_args *args, int flag);
 
-// test.c
+// main.c
 int	main(int ac, char **av);
 
 // utils.c
 void	ft_putstr_fd(char *s, int fd);
-unsigned int	ft_atoi_ph(const char *str);
+void	*ft_calloc(size_t count, size_t size);
+unsigned int	ft_atoi(const char *str);
 
 // walking.c
 void	*philosophers(void *philo);

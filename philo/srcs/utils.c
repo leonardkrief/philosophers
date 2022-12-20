@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 05:05:46 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/20 07:20:33 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,19 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-unsigned int	ft_atoi_ph(const char *str)
+void	*ft_calloc(size_t count, size_t size)
+{
+	int		i;
+	void	*tab;
+
+	tab = malloc(count * size);
+	if (!tab)
+		return (NULL);
+	memset(tab, 0, size * count);
+	return (tab);
+}
+
+unsigned int	ft_atoi(const char *str)
 {
 	unsigned int	i;
 	unsigned int	nb;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test.c                                             :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 06:25:21 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/20 13:09:06 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,8 @@ int	main(int ac, char **av)
 	else
 	{
 		init_args(&args, ac, av);
-		init_philo(&args);
-		int i = -1;
-		while (++i < args.phi_nb)
-		{
-			if (pthread_create(&args.ph[i], NULL, &philosopher, NULL) != 0)
-				free_philo(&args, FAILED_CRT_THRD);
-		}
-		int i = -1;
-		while (++i < args.phi_nb)
-		{
-			if (pthread_join(args.ph[i], NULL) != 0)
-				free_philo(&args, FAILED_JOIN_THRD);
-		}
+		init_philos(&args);
+		launch_philos(&args);
+		join_philos(&args);
 	}
 }
