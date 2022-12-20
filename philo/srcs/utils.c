@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 07:20:33 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/20 18:06:39 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ void	*ft_calloc(size_t count, size_t size)
 	return (tab);
 }
 
-unsigned int	ft_atoi(const char *str)
+unsigned int	ft_atoi_ph(const char *str)
 {
-	unsigned int	i;
-	unsigned int	nb;
+	unsigned int			i;
+	long long unsigned int	nb;
 
 	nb = 0;
 	i = 0;
@@ -47,7 +47,38 @@ unsigned int	ft_atoi(const char *str)
 		i++;
 	if (str[i] == '+')
 		i++;
-	while (str[i] >= '0' && str[i] <= '9')
+	while (str[i] >= '0' && str[i] <= '9' && nb <= INT_MAX)
 		nb = 10 * nb + str[i++] - '0';
+	if (nb > INT_MAX)
+	{
+		ft_putstr_fd("Input too big. Capped to INT_MAX\n")
+		return (INT_MAX);
+	}
 	return (nb);
+}
+
+int	set_time(struct timeval *t, int n)
+{
+	t->tv_sec = n / 100000;
+	t->tv_usec = n % 100000;
+}
+
+int	ft_utimediff(struct timeval *t1, struct timeval *t2)
+{
+	long long int	dif;
+
+	if (t1 == NULL && t2 == NULL)
+		return (0);
+	else if (t1 == NULL)
+		dif = -(1000000 * t2->tv_sec + t2->tv_usec);
+	else if (t2 == NULL)
+		dif = 1000000 * t1->tv_sec + t1->tv_usec;
+	else
+		dif = 1000000 * (t1->tv_sec - t2->tv_sec) + (t1->tv_usec - t2->tv_usec);
+	if ((int)dif < INT_MIN)
+		return (INT_MIN);
+	else if ((int)dif > INT_MAX)
+		return (INT_MAX);
+	else
+		return ((int)dif);
 }

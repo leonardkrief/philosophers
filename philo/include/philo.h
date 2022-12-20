@@ -6,20 +6,21 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 14:03:30 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/20 16:58:31 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include "philo_structs.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <pthread.h>
 # include <string.h>
 # include <sys/time.h>
+# include <limits.h>
+# include "philo_structs.h"
 
 // crawling.c
 void	init_args_stack(t_args *args, int ac, char **av);

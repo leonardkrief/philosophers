@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 13:09:06 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/20 17:18:11 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	main(int ac, char **av)
 {
-	t_args args;
+	t_args	args;
 
 	if (ac <= 4)
 		ft_putstr_fd("Too few arguments\n", 2);

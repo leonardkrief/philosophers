@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 14:18:44 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/20 17:54:37 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@
 # define FAILED_LOCK_MUTEX		0b0000011001000000
 # define FAILED_UNLOCK_MUTEX	0b0000011010000000
 # define FAILED_GET_TIME		0b0000011100000000
-# define FREE_PHILOS			0b0000100000000000
+# define FREE_THREADS			0b0000100000000000
 # define FREE_MUTEX				0b0001000000000000
 # define FREE_FORKS				0b0010000000000000
 # define FREE_LIVES				0b0100000000000000
-# define FREE_GET_TIME			0b1000000000000000
+# define FREE_MUTEX			0b1000000000000000
 # define FREE_ALL				0b1111100000000000
 
 // Philo n°i needs forks n°i and n°i+1 to eat
@@ -43,18 +43,17 @@ typedef struct s_args{
 	unsigned int	eat_tm;
 	unsigned int	slp_tm;
 	unsigned int	eat_nb;
-	struct timeval	*tp;
-	// i think tp is useless but i let it for the moment, will rmeove it later
-	pthread_t		*ph;
-	unsigned int	*life;
-	unsigned int	*fork;
-	pthread_mutex_t	mutex;
+	pthread_t		*th;
+	unsigned char	*fork;
+	pthread_mutex_t	*mutex;
 }	t_args;
 
 typedef struct s_philo{
 	unsigned int	n;
 	unsigned int	ate;
+	unsigned char	eating;
 	t_args			*args;
+	struct timeval	*to_live;
 	struct timeval	*tp;
 }	t_philo;
 
