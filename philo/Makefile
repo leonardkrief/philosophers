@@ -1,4 +1,8 @@
-SRCS			=	
+SRCS			=	srcs/exec.c \
+					srcs/free.c \
+					srcs/init.c \
+					srcs/main.c \
+					srcs/utils.c
 OBJS			=	${SRCS:.c=.o}
 
 CC				=	gcc

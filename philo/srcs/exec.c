@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 18:10:29 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/21 19:09:07 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,23 @@
 
 void	launch_philos(t_args *args)
 {
-	int		flag;
-	t_philo	*philo;
-	int		i;
+	int				flag;
+	t_philo			*philo;
+	unsigned int	i;
 
-	i = -1;
-	while (++i < args->phi_nb)
+	i = 0;
+	while (i < args->phi_nb)
 	{
+		philo = malloc(sizeof(*philo));
+		if (philo == NULL)
+			return (FAILED_MALLOC);
 		flag = init_philo(args, philo, i);
 		if (flag != 0)
 			break ;
 		flag = FAILED_CRT_THRD;
 		if (pthread_create(&args->th[i], NULL, &philosophers, philo) != 0)
 			break ;
+		i++;
 	}
 	// gerer le free si la boucle au dessus fail: attendre que tous les threads
 	// deja lances terminent pour free args et le philo cassé
@@ -69,7 +73,7 @@ void	eats(t_philo *ph)
 	}
 }
 
-void	to_sleep(t_philo *ph)
+void	sleeps(t_philo *ph)
 {
 	t_args			*a;
 
@@ -92,22 +96,22 @@ void	to_sleep(t_philo *ph)
 	usleep(a->slp_tm);
 }
 
-void	to_think(t_philo *ph)
+int	is_dead(t_philo *ph)
 {
-	t_args			*a;
-
-	a = ph->args;
-	
 	gettimeofday(ph->tp, NULL);
-	printf("%d %d is thinking", ft_utimediff(ph->tp, NULL), ph->n);
+	if ((unsigned int)ft_utimediff(ph->tp, ph->last_meal) > ph->args->die_tm)
+		return (1);
+	else
+		return (0);
 }
-
-void	*philosophers(t_philo *ph)
+void	*philosophers(void *philo)
 {
-	t_args			*a;
+	t_philo	*ph;
+	t_args	*a;
 
+	ph = (t_philo *)philo;
 	a = ph->args;
-	while (ft_utimediff(ph->to_live, NULL) > 0 && ph->ate++ < a->eat_nb)
+	while (ft_utimediff(ph->last_meal, NULL) > 0 && ph->ate++ < a->eat_nb)
 	{
 		if (is_dead(ph))
 			//Handle death
@@ -115,10 +119,11 @@ void	*philosophers(t_philo *ph)
 		if (is_dead(ph))
 			//Handle death
 		eats(ph);
-		to_sleep(ph);
+		sleeps(ph);
 		if (is_dead(ph))
 			//Handle death
 		gettimeofday(ph->tp, NULL);
 		printf("%d %d is thinking", ft_utimediff(ph->tp, NULL), ph->n);
 	}
+	return (NULL);
 }

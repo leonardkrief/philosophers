@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 18:06:39 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/21 18:58:11 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,20 +47,21 @@ unsigned int	ft_atoi_ph(const char *str)
 		i++;
 	if (str[i] == '+')
 		i++;
-	while (str[i] >= '0' && str[i] <= '9' && nb <= INT_MAX)
+	while (str[i] >= '0' && str[i] <= '9' && nb <= INT_MAX / 1000)
 		nb = 10 * nb + str[i++] - '0';
-	if (nb > INT_MAX)
+	if (nb > INT_MAX / 1000)
 	{
-		ft_putstr_fd("Input too big. Capped to INT_MAX\n")
-		return (INT_MAX);
+		ft_putstr_fd("Input too big. Capped to INT_MAX / 1000\n", 2);
+		return (INT_MAX / 1000);
 	}
 	return (nb);
 }
 
+// Time n must be given in milliseconds
 int	set_time(struct timeval *t, int n)
 {
-	t->tv_sec = n / 100000;
-	t->tv_usec = n % 100000;
+	t->tv_sec = n / 1000000;
+	t->tv_usec = n % 1000000;
 }
 
 int	ft_utimediff(struct timeval *t1, struct timeval *t2)

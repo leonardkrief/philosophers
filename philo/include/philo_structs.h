@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 17:54:37 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/21 18:59:44 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define FREE_MUTEX				0b0001000000000000
 # define FREE_FORKS				0b0010000000000000
 # define FREE_LIVES				0b0100000000000000
-# define FREE_MUTEX			0b1000000000000000
+# define FREE_ONE_MORE			0b1000000000000000
 # define FREE_ALL				0b1111100000000000
 
 // Philo n°i needs forks n°i and n°i+1 to eat
@@ -53,7 +53,7 @@ typedef struct s_philo{
 	unsigned int	ate;
 	unsigned char	eating;
 	t_args			*args;
-	struct timeval	*to_live;
+	struct timeval	*last_meal;
 	struct timeval	*tp;
 }	t_philo;
 

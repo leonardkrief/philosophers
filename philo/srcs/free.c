@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/20 17:33:51 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/21 19:12:36 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,31 @@ void	ft_puterror(int flag)
 		ft_putstr_fd("Failed unlock mutex\n", STDERR_FILENO);
 }
 
-void	*free_args(t_args *args, int flag)
+int	free_args(t_args *args, int flag, int nb_mutex)
 {
+	int	i;
+
 	if (flag & FREE_THREADS)
 		free(args->th);
 	if (flag & FREE_FORKS)
 		free(args->fork);
 	if (flag & FREE_MUTEX)
-		pthread_mutex_destroy(&args->mutex);
+	{
+		i = -1;
+		while (++i < nb_mutex)
+			pthread_mutex_destroy(&args->mutex[i]);
+	}
 	ft_puterror(flag);
 	if (flag & EXIT_FLAG)
 		exit(-(flag & EXIT_NB));
+	return (flag & EXIT_FLAG);
 }
 
-void	*free_philos(t_args *args, int flag)
+void	*free_philos(t_philo *philo, int flag)
 {
-	
+	int	i;
+
+	if (flag & FREE_MUTEX)
+		free(philo->last_meal);
+	struct timeval	*tp;
 }
