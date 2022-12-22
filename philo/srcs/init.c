@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 04:24:25 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 06:05:41 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	init_args_stack(t_args *args, int ac, char **av)
 {
 	args->phi_nb = ft_atoi_ph(av[1]);
-	args->die_tm = ft_atoi_ph(av[2]) * 1000;
+	args->die_tm = ft_atoi_ph(av[2]);
 	args->eat_tm = ft_atoi_ph(av[3]) * 1000;
 	args->slp_tm = ft_atoi_ph(av[4]) * 1000;
 	if (ac == 6)
@@ -23,6 +23,7 @@ void	init_args_stack(t_args *args, int ac, char **av)
 	else
 		args->eat_nb = 0;
 	args->exec = 0;
+	args->dead = 0;
 	args->start.tv_sec = 0;
 	args->start.tv_usec = 0;
 	args->th = NULL;
@@ -34,7 +35,7 @@ int	init_args_heap(t_args *args)
 {
 	int	i;
 
-	if (pthread_mutex_init(&args->mutex[i], NULL))
+	if (pthread_mutex_init(&args->safety, NULL))
 		return (free_args(args, FAILED_INIT_MUTEX));
 	args->th = malloc (sizeof(*args->th) * (args->phi_nb));
 	if (args->th == NULL)
@@ -47,7 +48,7 @@ int	init_args_heap(t_args *args)
 	if (args->mutex == NULL)
 		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS));
 	i = -1;
-	while (++i < args->phi_nb)
+	while (++i < (int)args->phi_nb)
 	{
 		if (pthread_mutex_init(&args->mutex[i], NULL))
 		{
@@ -62,11 +63,10 @@ int	init_args_heap(t_args *args)
 int	init_philo(t_args *args, t_philo *philo, int i)
 {
 	philo->args = args;
-	philo->n = i + 1;
+	philo->n = i;
 	philo->ate = 0;
 	philo->eating = 0;
-	if (gettimeofday(&philo->birth, NULL))
-		return (FAILED_GET_TIME);
+	philo->dead = 0;
 	if (gettimeofday(&philo->last_meal, NULL))
 		return (FAILED_GET_TIME);
 	return (0);
@@ -75,11 +75,12 @@ int	init_philo(t_args *args, t_philo *philo, int i)
 int	exec_threads(t_args *args, t_philo *philos)
 {
 	unsigned int	i;
+	unsigned int	x;
 
 	if (gettimeofday(&args->start, NULL))
 		args->exec += 1;
 	if (pthread_mutex_lock(&args->safety))
-		return (free_args(&args, FAILED_MUTEX_LOCK | FREE_ALL | DESTROY_ALL));
+		return (free_args(args, FAILED_MUTEX_LOCK | FREE_ALL | DESTROY_ALL));
 	i = -1;
 	while (++i < args->phi_nb && !args->exec)
 	{
@@ -89,9 +90,10 @@ int	exec_threads(t_args *args, t_philo *philos)
 	}
 	if (pthread_mutex_unlock(&args->safety))
 		args->exec += 4;
-	while (--i >= 0)
+	x = 0;
+	while (x < i)
 	{
-		if (pthread_join(args->th[i], NULL))
+		if (pthread_join(args->th[x++], NULL))
 			args->exec += 8;
 	}
 	return (args->exec);

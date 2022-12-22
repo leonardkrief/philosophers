@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 04:18:14 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 07:06:53 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	ft_putnbr_fd(int nb, int fd)
 	char			c;
 	unsigned int	z;
 
+	z = nb;
 	if (nb < 0)
 	{
 		ft_putstr_fd("-", fd);
@@ -42,7 +43,6 @@ void	ft_putnbr_fd(int nb, int fd)
 
 void	*ft_calloc(size_t count, size_t size)
 {
-	int		i;
 	void	*tab;
 
 	tab = malloc(count * size);
@@ -73,7 +73,7 @@ unsigned int	ft_atoi_ph(const char *str)
 	return (nb);
 }
 
-int	ft_utdiff(struct timeval *t1, struct timeval *t2)
+long long int	ft_utdiff(struct timeval *t1, struct timeval *t2)
 {
 	long long int	dif;
 
@@ -85,10 +85,25 @@ int	ft_utdiff(struct timeval *t1, struct timeval *t2)
 		dif = 1000000 * t1->tv_sec + t1->tv_usec;
 	else
 		dif = 1000000 * (t1->tv_sec - t2->tv_sec) + (t1->tv_usec - t2->tv_usec);
-	if ((int)dif < INT_MIN)
-		return (INT_MIN);
-	else if ((int)dif > INT_MAX)
-		return (INT_MAX);
+	if (dif < LONG_MIN)
+		return (LONG_MIN / 1000);
+	else if (dif > LONG_MAX)
+		return (LONG_MAX / 1000);
 	else
-		return ((int)dif);
+		return (dif / 1000);
+}
+
+void	printforks(t_philo *ph)
+{
+	t_args *a;
+	unsigned int		i;
+
+	a = ph->args;
+	printf("[%lld] %d {", ft_utdiff(&ph->tp, &a->start), ph->n + 1);
+	i = 0;
+	while (i < a->phi_nb - 1)
+		printf("%d ", a->fork[i++]);
+	printf("%d}\n", a->fork[i]);
+	
+		
 }
