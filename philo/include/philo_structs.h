@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 13:01:59 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 19:39:36 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ typedef struct s_philo{
 	unsigned char	thinks;
 	unsigned char	sleeps;
 	unsigned char	dead;
+	unsigned char	r_fork;
+	unsigned char	l_fork;
 	struct timeval	last_meal;
 	struct timeval	tp;
 }	t_philo;

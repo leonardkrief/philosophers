@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 18:39:34 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 19:53:41 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,39 +21,36 @@ int	gets_forks(t_philo *ph)
 		return (ph->args->dead);
 	if (pthread_mutex_lock(&a->mutex[ph->n]))
 		handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
-	printf("{%d} fork locked mutex %d\n", ph->n + 1, ph->n);
-	if (pthread_mutex_lock(&a->mutex[(ph->n + 1) % a->phi_nb]))
-		handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
-	printf("{%d} fork locked mutex %d\n", ph->n + 1, (ph->n + 1) % a->phi_nb);
-	printf("{%d} left_fork %d right_fork %d\n", ph->n + 1, ph->n, (ph->n + 1) % a->phi_nb);
-	if (a->fork[ph->n] && a->fork[(ph->n + 1) % a->phi_nb])
+	if (!a->dead && a->fork[ph->n])
 	{
 		a->fork[ph->n] = 0;
+		ph->l_fork = 1;
+	}
+	if (pthread_mutex_unlock(&a->mutex[ph->n]))
+		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
+	if (pthread_mutex_lock(&a->mutex[(ph->n + 1) % a->phi_nb]))
+		handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
+	if (!a->dead && a->fork[(ph->n + 1) % a->phi_nb] && a->phi_nb >= 2 )
+	{
 		a->fork[(ph->n + 1) % a->phi_nb] = 0;
-		ph->got_forks = 1;
+		ph->r_fork = 1;
 		gettimeofday(&ph->tp, NULL);
 		printf("[%lld] %d has taken a fork\n", ft_utdiff(&ph->tp, &a->start), ph->n + 1);
-		// printf("[%d] forks ph_n = %d   left_fork = %d   right_fork =  %d   eating = %d\n", ft_utdiff(&ph->tp, &a->start), ph->n, a->fork[ph->n], a->fork[(ph->n + 1) % a->phi_nb], ph->eating);
 	}
 	if (pthread_mutex_unlock(&a->mutex[(ph->n + 1) % a->phi_nb]))
 		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
-	printf("{%d} fork locked mutex %d\n", ph->n + 1, (ph->n + 1) % a->phi_nb);
-	if (pthread_mutex_unlock(&a->mutex[ph->n]))
-		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
-	printf("{%d} fork locked mutex %d\n", ph->n + 1, (ph->n + 1) % a->phi_nb);
-	return (ph->eating);
+	return (ph->l_fork & ph->r_fork);
 }
 
 int	eats(t_philo *ph)
 {
 	t_args			*a;
 
+	a = ph->args;
 	if (is_dead(ph))
 		return (ph->args->dead);
-	a = ph->args;
 	gettimeofday(&ph->tp, NULL);
 	printf("[%lld] %d is eating\n", ft_utdiff(&ph->tp, &a->start), ph->n + 1);
-	ph->eating = 1;
 	usleep(a->eat_tm);
 	gettimeofday(&ph->last_meal, NULL);
 	return (0);
@@ -66,29 +63,26 @@ int	sleeps(t_philo *ph)
 	a = ph->args;
 	if (is_dead(ph))
 		return (ph->args->dead);
-	if (pthread_mutex_lock(&a->mutex[ph->n]))
-		handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
-	printf("{%d} sleep locked mutex %d\n", ph->n + 1, ph->n);
-	if (pthread_mutex_lock(&a->mutex[(ph->n + 1) % a->phi_nb]))
-		handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
-	printf("{%d} sleep locked mutex %d\n", ph->n + 1, (ph->n + 1) % a->phi_nb);
-	printf("{%d} left_fork %d right_fork %d\n", ph->n + 1, ph->n, (ph->n + 1) % a->phi_nb);
-	if (!a->fork[ph->n] && !a->fork[(ph->n + 1) % a->phi_nb])
+	if (ph->l_fork & ph->r_fork)
 	{
+		if (pthread_mutex_lock(&a->mutex[ph->n]))
+			handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
 		a->fork[ph->n] = 1;
+		if (pthread_mutex_unlock(&a->mutex[ph->n]))
+			handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
+		if (pthread_mutex_lock(&a->mutex[(ph->n + 1) % a->phi_nb]))
+			handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
+		//printf("{%d} left_fork %d right_fork %d\n", ph->n + 1, ph->n, (ph->n + 1) % a->phi_nb);
 		a->fork[(ph->n + 1) % a->phi_nb] = 1;
+		if (pthread_mutex_unlock(&a->mutex[(ph->n + 1) % a->phi_nb]))
+			handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
 		ph->sleeps = 1;
+		ph->l_fork = 0;
+		ph->r_fork = 0;
 		gettimeofday(&ph->tp, NULL);
 		printf("[%lld] %d is sleeping\n", ft_utdiff(&ph->tp, &a->start), ph->n + 1);
-		//printf("[%lld] sleep ph_n = %d   left_fork = %d   right_fork =  %d   eating = %d\n", ft_utdiff(&ph->tp, &a->start), ph->n + 1, a->fork[ph->n], a->fork[(ph->n + 1) % a->phi_nb], ph->eating);
+		usleep(ph->args->slp_tm);
 	}
-	if (pthread_mutex_unlock(&a->mutex[(ph->n + 1) % a->phi_nb]))
-		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
-	printf("{%d} sleep unlocked mutex %d\n", ph->n + 1, (ph->n + 1) % a->phi_nb);
-	if (pthread_mutex_unlock(&a->mutex[ph->n]))
-		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
-	printf("{%d} sleep locked mutex %d\n", ph->n + 1, ph->n);
-	usleep(a->slp_tm);
 	return (0);
 }
 
@@ -127,19 +121,17 @@ void	*philosophers(void *philo)
 	// 	a->exec = FAILED_MUTEX_UNLOCK;
 	while (!a->dead && (ph->ate++ < a->eat_nb || !a->eat_nb))
 	{
-		// printf("{%d.1} %d deads\n", ph->n + 1, a->dead);
-		while(!ph->got_forks && !a->dead)
+		// printf("{%d} eat nb %d, should eat %d\n", ph->n + 1, ph->ate, a->eat_nb);
+		while((!ph->l_fork || !ph->r_fork) && !a->dead)
 		// {
 		// 	printforks(ph);
 			gets_forks(ph);
 		// }
-		ph->got_forks = 0;
 		// printf("{%d.2} %d deads\n", ph->n + 1, a->dead);
-		while (!ph->eating && !a->dead)
+		if (!a->dead)
 			eats(ph);
-		ph->eating = 0;
 		// printf("{%d.3} %d deads\n", ph->n + 1, a->dead);
-		while (!ph->sleeps && !a->dead)
+		if(!a->dead)
 			sleeps(ph);
 		ph->sleeps = 0;
 		gettimeofday(&ph->tp, NULL);

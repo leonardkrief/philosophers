@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 13:04:35 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 19:14:28 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	init_philo(t_args *args, t_philo *philo, int i)
 	philo->thinks = 0;
 	philo->sleeps = 0;
 	philo->dead = 0;
+	philo->r_fork = 0;
+	philo->l_fork = 0;
 	if (gettimeofday(&philo->last_meal, NULL))
 		return (FAILED_GET_TIME);
 	return (0);

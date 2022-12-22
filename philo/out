@@ -1,152 +1,140 @@
-{0.1} 0 deads
-{2.1} 0 deads
 [0] 1 has taken a fork
-{0.2} 0 deads
 [0] 1 is eating
 [0] 3 has taken a fork
-{2.2} 0 deads
 [0] 3 is eating
-{1.1} 0 deads
-{4.1} 0 deads
-{3.1} 0 deads
-{0.3} 0 deads
-[105] 1 is sleeping
-[105] 5 has taken a fork
-{4.2} 0 deads
-[105] 5 is eating
-{2.3} 0 deads
-[105] 3 is sleeping
-[105] 2 has taken a fork
-{1.2} 0 deads
-[105] 2 is eating
-[210] 3 is thinking
-{2.1} 0 deads
-[210] 1 is thinking
-{0.1} 0 deads
-{1.3} 0 deads
-[210] 2 is sleeping
-{4.3} 0 deads
-[210] 5 is sleeping
-[210] 1 has taken a fork
-{0.2} 0 deads
-[210] 1 is eating
-[210] 4 has taken a fork
-{3.2} 0 deads
-[210] 4 is eating
-[315] 2 is thinking
-{1.1} 0 deads
-[315] 5 is thinking
-{4.1} 0 deads
-{3.3} 0 deads
-[315] 4 is sleeping
-{0.3} 0 deads
-[315] 3 has taken a fork
-{2.2} 0 deads
-[315] 3 is eating
-[315] 1 is sleeping
-[315] 5 has taken a fork
-{4.2} 0 deads
-[315] 5 is eating
-[420] 4 is thinking
-{3.1} 0 deads
-{2.3} 0 deads
-[420] 3 is sleeping
-[420] 1 is thinking
-{0.1} 0 deads
-{4.3} 0 deads
-[420] 2 has taken a fork
-{1.2} 0 deads
-[420] 2 is eating
-[420] 5 is sleeping
-[420] 4 has taken a fork
-{3.2} 0 deads
-[420] 4 is eating
-[525] 3 is thinking
-{2.1} 0 deads
-{1.3} 0 deads
-[525] 2 is sleeping
-[525] 1 has taken a fork
-{0.2} 0 deads
-[525] 1 is eating
-[525] 5 is thinking
-{4.1} 0 deads
-{3.3} 0 deads
-[525] 4 is sleeping
-[525] 3 has taken a fork
-{2.2} 0 deads
-[525] 3 is eating
-[630] 2 is thinking
-{1.1} 0 deads
-{0.3} 0 deads
-[630] 1 is sleeping
-[630] 5 has taken a fork
-{4.2} 0 deads
-[630] 5 is eating
-[630] 4 is thinking
-{3.1} 0 deads
-{2.3} 0 deads
-[630] 3 is sleeping
-[630] 2 has taken a fork
-{1.2} 0 deads
-[630] 2 is eating
-[735] 1 is thinking
-{0.1} 0 deads
-{4.3} 0 deads
-[735] 5 is sleeping
-[735] 3 is thinking
-{2.1} 0 deads
-[735] 4 has taken a fork
-{3.2} 0 deads
-[735] 4 is eating
-{1.3} 0 deads
-[735] 2 is sleeping
-[735] 1 has taken a fork
-{0.2} 0 deads
-[735] 1 is eating
-[840] 5 is thinking
-{4.1} 0 deads
-{3.3} 0 deads
-[840] 4 is sleeping
-[840] 2 is thinking
-{1.1} 0 deads
-[840] 3 has taken a fork
-{0.3} 0 deads
-{2.2} 0 deads
-[840] 3 is eating
-[840] 1 is sleeping
-[840] 5 has taken a fork
-{4.2} 0 deads
-[840] 5 is eating
-[945] 4 is thinking
-{3.1} 0 deads
-{2.3} 0 deads
-[945] 1 is thinking
-{0.1} 0 deads
-[945] 3 is sleeping
-{4.3} 0 deads
-[945] 2 has taken a fork
-{1.2} 0 deads
-[945] 2 is eating
-[945] 5 is sleeping
-[945] 4 has taken a fork
-{3.2} 0 deads
-[945] 4 is eating
-[1050] 3 is thinking
-{2.1} 0 deads
-{3.3} 0 deads
-[1050] 4 is sleeping
-[1050] 5 is thinking
-{4.1} 0 deads
-[1050] 5 has taken a fork
-{4.2} 0 deads
-[1050] 5 is eating
-{1.3} 0 deads
-[1050] 2 is sleeping
-[1050] 3 has taken a fork
-{2.2} 0 deads
-[1050] 3 is eating
-[1141] 1 died
-{0.2} 1 deads
-{0.3} 1 deads
-{4.3} 1 deads
-{2.3} 1 deads
+[205] 2 has taken a fork
+[205] 5 has taken a fork
+[205] 5 is eating
+[205] 3 is sleeping
+[205] 2 is eating
+[205] 1 is sleeping
+[410] 5 is sleeping
+[410] 3 is thinking
+[410] 2 is sleeping
+[410] 4 has taken a fork
+[410] 4 is eating
+[410] 1 is thinking
+[410] 1 has taken a fork
+[410] 1 is eating
+[615] 5 is thinking
+[615] 2 is thinking
+[615] 3 has taken a fork
+[615] 3 is eating
+[615] 5 has taken a fork
+[615] 4 is sleeping
+[615] 5 is eating
+[615] 1 is sleeping
+[820] 2 has taken a fork
+[820] 2 is eating
+[820] 4 is thinking
+[820] 3 is sleeping
+[820] 5 is sleeping
+[820] 1 is thinking
+[820] 4 has taken a fork
+[820] 4 is eating
+[1025] 1 has taken a fork
+[1025] 1 is eating
+[1025] 2 is sleeping
+[1025] 3 is thinking
+[1025] 5 is thinking
+[1025] 3 has taken a fork
+[1025] 3 is eating
+[1025] 4 is sleeping
+[1230] 2 is thinking
+[1230] 5 has taken a fork
+[1230] 3 is sleeping
+[1230] 5 is eating
+[1230] 2 has taken a fork
+[1230] 2 is eating
+[1230] 1 is sleeping
+[1230] 4 is thinking
+[1435] 3 is thinking
+[1435] 1 is thinking
+[1435] 4 has taken a fork
+[1435] 5 is sleeping
+[1435] 4 is eating
+[1435] 2 is sleeping
+[1435] 1 has taken a fork
+[1435] 1 is eating
+[1640] 5 is thinking
+[1640] 3 has taken a fork
+[1640] 3 is eating
+[1640] 2 is thinking
+[1640] 4 is sleeping
+[1640] 1 is sleeping
+[1640] 5 has taken a fork
+[1640] 5 is eating
+[1845] 4 is thinking
+[1845] 2 has taken a fork
+[1845] 2 is eating
+[1845] 1 is thinking
+[1845] 3 is sleeping
+[1845] 5 is sleeping
+[1845] 4 has taken a fork
+[1845] 4 is eating
+[2050] 2 is sleeping
+[2050] 3 is thinking
+[2050] 4 is sleeping
+[2050] 3 has taken a fork
+[2050] 3 is eating
+[2050] 1 has taken a fork
+[2050] 1 is eating
+[2050] 5 is thinking
+[2255] 4 is thinking
+[2255] 2 is thinking
+[2255] 3 is sleeping
+[2255] 2 has taken a fork
+[2255] 1 is sleeping
+[2255] 5 has taken a fork
+[2255] 5 is eating
+[2255] 2 is eating
+[2460] 3 is thinking
+[2460] 1 is thinking
+[2460] 5 is sleeping
+[2460] 2 is sleeping
+[2460] 1 has taken a fork
+[2460] 1 is eating
+[2460] 4 has taken a fork
+[2460] 4 is eating
+[2665] 5 is thinking
+[2665] 1 is sleeping
+[2665] 5 has taken a fork
+[2665] 2 is thinking
+[2665] 4 is sleeping
+[2665] 5 is eating
+[2665] 3 has taken a fork
+[2665] 3 is eating
+[2870] 1 is thinking
+[2870] 4 is thinking
+[2870] 5 is sleeping
+[2870] 2 has taken a fork
+[2870] 2 is eating
+[2870] 4 has taken a fork
+[2870] 4 is eating
+[2870] 3 is sleeping
+[3075] 5 is thinking
+[3075] 2 is sleeping
+[3075] 4 is sleeping
+[3075] 1 has taken a fork
+[3075] 1 is eating
+[3075] 3 is thinking
+[3075] 3 has taken a fork
+[3075] 3 is eating
+[3280] 2 is thinking
+[3280] 4 is thinking
+[3280] 2 has taken a fork
+[3280] 2 is eating
+[3280] 5 has taken a fork
+[3280] 3 is sleeping
+[3280] 1 is sleeping
+[3280] 5 is eating
+[3485] 1 is thinking
+[3485] 3 is thinking
+[3485] 4 has taken a fork
+[3485] 4 is eating
+[3485] 2 is sleeping
+[3485] 5 is sleeping
+[3690] 2 is thinking
+[3690] 4 is sleeping
+[3690] 5 is thinking
+[3894] 4 is thinking
