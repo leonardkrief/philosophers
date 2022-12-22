@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/21 18:58:11 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 04:18:14 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,22 @@ void	ft_putstr_fd(char *s, int fd)
 		while (s[++i])
 			write(fd, s + i, 1);
 	}
+}
+
+void	ft_putnbr_fd(int nb, int fd)
+{
+	char			c;
+	unsigned int	z;
+
+	if (nb < 0)
+	{
+		ft_putstr_fd("-", fd);
+		z = -nb;
+	}
+	if (z >= 10)
+		ft_putnbr_fd(z / 10, fd);
+	c = '0' + z % 10;
+	write(fd, &c, 1);
 }
 
 void	*ft_calloc(size_t count, size_t size)
@@ -57,14 +73,7 @@ unsigned int	ft_atoi_ph(const char *str)
 	return (nb);
 }
 
-// Time n must be given in milliseconds
-int	set_time(struct timeval *t, int n)
-{
-	t->tv_sec = n / 1000000;
-	t->tv_usec = n % 1000000;
-}
-
-int	ft_utimediff(struct timeval *t1, struct timeval *t2)
+int	ft_utdiff(struct timeval *t1, struct timeval *t2)
 {
 	long long int	dif;
 
