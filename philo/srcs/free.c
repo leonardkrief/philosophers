@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 06:19:24 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 13:03:04 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,33 +55,17 @@ int	free_args(t_args *args, int flag)
 	return (flag & EXIT_FLAG);
 }
 
-int handle_death(t_args *args, t_philo *ph)
-{
-	if (!args->exec && ph->dead)
-	{
-		if (pthread_mutex_lock(&args->safety))
-			args->exec = FAILED_MUTEX_LOCK;
-		args->exec = -ph->n;
-		gettimeofday(&ph->tp, NULL);
-		if (ph->dead)
-			printf("[%lld] %d died\n", ft_utdiff(&ph->tp, &args->start), ph->n + 1);
-		if (pthread_mutex_unlock(&args->safety))
-			args->exec = FAILED_MUTEX_UNLOCK;
-	}
-	return (0);
-}
-
 void	handle_thread_error(t_args *args, t_philo *ph, int flag)
 {
-	if (!args->exec)
+	if (!args->dead)
 	{
 		if (pthread_mutex_lock(&args->safety))
-			args->exec = FAILED_MUTEX_LOCK;
-		args->exec = flag;
+			args->dead = -FAILED_MUTEX_LOCK;
+		args->dead = -flag;
 		ft_putnbr_fd(ph->n, 2);
 		ft_putstr_fd("  ERROR  ", 2);
 		ft_puterror(flag);
 		if (pthread_mutex_unlock(&args->safety))
-			args->exec = FAILED_MUTEX_UNLOCK;
+			args->dead = -FAILED_MUTEX_UNLOCK;
 	}
 }

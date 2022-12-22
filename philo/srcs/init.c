@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 06:05:41 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 13:04:35 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	init_args_stack(t_args *args, int ac, char **av)
 		args->eat_nb = ft_atoi_ph(av[5]);
 	else
 		args->eat_nb = 0;
-	args->exec = 0;
 	args->dead = 0;
 	args->start.tv_sec = 0;
 	args->start.tv_usec = 0;
@@ -65,7 +64,10 @@ int	init_philo(t_args *args, t_philo *philo, int i)
 	philo->args = args;
 	philo->n = i;
 	philo->ate = 0;
+	philo->got_forks = 0;
 	philo->eating = 0;
+	philo->thinks = 0;
+	philo->sleeps = 0;
 	philo->dead = 0;
 	if (gettimeofday(&philo->last_meal, NULL))
 		return (FAILED_GET_TIME);
@@ -78,23 +80,23 @@ int	exec_threads(t_args *args, t_philo *philos)
 	unsigned int	x;
 
 	if (gettimeofday(&args->start, NULL))
-		args->exec += 1;
+		args->dead += 1;
 	if (pthread_mutex_lock(&args->safety))
 		return (free_args(args, FAILED_MUTEX_LOCK | FREE_ALL | DESTROY_ALL));
 	i = -1;
-	while (++i < args->phi_nb && !args->exec)
+	while (++i < args->phi_nb && !args->dead)
 	{
 		if (init_philo(args, &philos[i], i) 
 			|| pthread_create(&args->th[i], NULL, &philosophers, &philos[i]))
-			args->exec += 2;
+			args->dead += 2;
 	}
 	if (pthread_mutex_unlock(&args->safety))
-		args->exec += 4;
+		args->dead += 4;
 	x = 0;
 	while (x < i)
 	{
 		if (pthread_join(args->th[x++], NULL))
-			args->exec += 8;
+			args->dead += 8;
 	}
-	return (args->exec);
+	return (args->dead);
 }

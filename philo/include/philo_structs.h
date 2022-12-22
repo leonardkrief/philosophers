@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 05:41:43 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 13:01:59 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ typedef struct s_args{
 	unsigned char	*fork;
 	pthread_mutex_t	safety;
 	pthread_mutex_t	*mutex;
-	int				exec;
 	int				dead;
 }	t_args;
 
@@ -59,7 +58,10 @@ typedef struct s_philo{
 	t_args			*args;
 	unsigned int	n;
 	unsigned int	ate;
+	unsigned char	got_forks;
 	unsigned char	eating;
+	unsigned char	thinks;
+	unsigned char	sleeps;
 	unsigned char	dead;
 	struct timeval	last_meal;
 	struct timeval	tp;
