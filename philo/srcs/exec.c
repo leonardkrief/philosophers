@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/23 12:39:42 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/23 19:24:17 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void	eats(t_philo *ph)
 	a = ph->args;
 	if (is_dead(ph))
 		return ;
+	gettimeofday(&ph->last_meal, NULL);
 	gettimeofday(&ph->tp, NULL);
 	printf("[%lld] %d is eating\n", ft_utdiff(&ph->tp, &a->start), ph->n + 1);
 	usleep(a->eat_tm);
-	gettimeofday(&ph->last_meal, NULL);
 }
 
 void	sleeps(t_philo *ph)

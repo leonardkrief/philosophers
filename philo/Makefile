@@ -6,7 +6,7 @@ SRCS			=	srcs/exec.c \
 OBJS			=	${SRCS:.c=.o}
 
 CC				=	gcc
-CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-g3 -Wall -Wextra -Werror -fsanitize=thread
 INCLUDE			=	-Iinclude
 RM				=	rm -rf
 
