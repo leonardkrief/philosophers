@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 19:14:28 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 20:16:13 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,6 @@ int	init_philo(t_args *args, t_philo *philo, int i)
 	philo->args = args;
 	philo->n = i;
 	philo->ate = 0;
-	philo->got_forks = 0;
-	philo->eating = 0;
-	philo->thinks = 0;
-	philo->sleeps = 0;
 	philo->dead = 0;
 	philo->r_fork = 0;
 	philo->l_fork = 0;
@@ -88,7 +84,7 @@ int	exec_threads(t_args *args, t_philo *philos)
 	i = -1;
 	while (++i < args->phi_nb && !args->dead)
 	{
-		if (init_philo(args, &philos[i], i) 
+		if (init_philo(args, &philos[i], i)
 			|| pthread_create(&args->th[i], NULL, &philosophers, &philos[i]))
 			args->dead += 2;
 	}

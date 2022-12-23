@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 19:39:36 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 20:16:06 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,6 @@ typedef struct s_philo{
 	t_args			*args;
 	unsigned int	n;
 	unsigned int	ate;
-	unsigned char	got_forks;
-	unsigned char	eating;
-	unsigned char	thinks;
-	unsigned char	sleeps;
 	unsigned char	dead;
 	unsigned char	r_fork;
 	unsigned char	l_fork;

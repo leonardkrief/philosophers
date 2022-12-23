@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 13:31:26 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/22 20:06:03 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,32 +91,4 @@ long long int	ft_utdiff(struct timeval *t1, struct timeval *t2)
 		return (LONG_MAX / 1000);
 	else
 		return (dif / 1000);
-}
-
-void	printforks(t_philo *ph)
-{
-	char	*str;
-	unsigned int		forks;
-	unsigned int		i;
-
-	str = malloc(sizeof(*str) * (3 * (ph->args->phi_nb + 1) + 1));
-	if (str)
-	{
-		i = 0;
-		str[i++] = '0' + ph->n + 1;
-		str[i++] = ' ';
-		str[i++] = '[';
-		forks = 0;
-		while (forks < ph->args->phi_nb - 1)
-		{
-			str[i++] = '0' + ph->args->fork[forks++];
-			str[i++] = ',';
-			str[i++] = ' ';
-		}
-		str[i++] = '0' + ph->args->fork[forks++];
-		str[i++] = ']';
-		str[i] = '\0';
-	}
-	printf("%s\n", str);
-	free(str);
 }

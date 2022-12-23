@@ -27,7 +27,7 @@ clean:
 				${RM} ${OBJS}
 
 fclean:			clean
-				${RM} ${PHILOSOPHERS}
+				${RM} ${PHILOSOPHERS} file log_file
 
 re:				fclean all
 
