@@ -6,24 +6,24 @@
 #    By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/20 15:19:42 by lkrief            #+#    #+#              #
-#    Updated: 2022/12/23 18:29:13 by lkrief           ###   ########.fr        #
+#    Updated: 2022/12/23 22:56:24 by lkrief           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-if [[ $1 -eq "log" ]]
-then
-	cat file | grep "] $2 ";
-	exit;
-else
+# if [[ $1 -eq "log" ]]
+# then
+# 	cat file | grep "] $2 ";
+# 	exit;
+# else
 	./philo $1 $2 $3 $4 $5 | tee file;
 	> log_file;
-fi
+# fi
 
 s="";
-if [[ $(uname -o | grep Linux) ]]
-then
-	s="   ";
-fi
+# if [[ $(uname | grep Linux) ]]
+# then
+# 	s="   ";
+# fi
 
 x=1;
 while [[ "$x" -le $1 ]]
@@ -31,15 +31,15 @@ do
 echo "________($x)________" >> log_file;
 printf "showed     $s" >> log_file;
 grep "] $x " file | wc -l >> log_file;
-printf "took a fork$s">> log_file;
+printf "took a fork$s" >> log_file;
 grep "] $x has taken a fork" file | wc -l >> log_file;
-printf "eating     $s">> log_file;
+printf "eating     $s" >> log_file;
 grep "] $x is eating" file | wc -l >> log_file;
-printf "sleeping   $s">> log_file;
+printf "sleeping   $s" >> log_file;
 grep "] $x is sleeping" file | wc -l >> log_file;
-printf "thinking   $s">> log_file;
+printf "thinking   $s" >> log_file;
 grep "] $x is thinking" file | wc -l >> log_file;
-printf "died       $s">> log_file;
+printf "died       $s" >> log_file;
 grep "] $x died" file | wc -l >> log_file;
 x=$((x+1))
 done

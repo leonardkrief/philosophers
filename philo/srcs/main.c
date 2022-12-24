@@ -6,11 +6,13 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/23 12:39:51 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/24 12:50:05 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+
 
 void	*philosophers(void *philo)
 {
@@ -19,16 +21,16 @@ void	*philosophers(void *philo)
 
 	ph = (t_philo *)philo;
 	a = ph->args;
-	while (!a->dead && (ph->ate++ < a->eat_nb || !a->eat_nb))
+	while (!check_dead(ph) && (ph->ate++ < a->eat_nb || !a->eat_nb))
 	{
-		while ((!ph->l_fork || !ph->r_fork) && !a->dead)
+		while ((!ph->l_fork || !ph->r_fork) && !check_dead(ph))
 			gets_forks(ph);
-		if (!a->dead)
+		if (!check_dead(ph))
 			eats(ph);
-		if (!a->dead)
+		if (!check_dead(ph))
 			sleeps(ph);
 		gettimeofday(&ph->tp, NULL);
-		if (!a->dead)
+		if (!check_dead(ph))
 			printf("[%lld] %d is thinking\n",
 				ft_utdiff(&ph->tp, &a->start), ph->n + 1);
 	}

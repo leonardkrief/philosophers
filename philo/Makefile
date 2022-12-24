@@ -6,7 +6,7 @@ SRCS			=	srcs/exec.c \
 OBJS			=	${SRCS:.c=.o}
 
 CC				=	gcc
-CFLAGS			=	-g3 -Wall -Wextra -Werror -fsanitize=thread
+CFLAGS			=	-Wall -Wextra -Werror
 INCLUDE			=	-Iinclude
 RM				=	rm -rf
 
@@ -19,7 +19,7 @@ ${PHILOSOPHERS}:	${OBJS}
 					${CC} ${CFLAGS} ${OBJS} -o ${PHILOSOPHERS}
 
 debug:				${OBJS}
-					${CC} ${CFLAGS} -g3 ${OBJS} -o ${PHILOSOPHERS}
+					${CC} ${CFLAGS} -g3 -fsanitize=thread ${OBJS} -o ${PHILOSOPHERS}
 
 all:			${PHILOSOPHERS}
 

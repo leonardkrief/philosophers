@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/23 13:04:11 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/24 12:50:56 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void			check_both_forks(t_philo *p);
 void			eats(t_philo *ph);
 void			sleeps(t_philo *ph);
 int				is_dead(t_philo *ph);
-
+int				check_dead(t_philo *ph);
 // free.c
 void			ft_puterror(int flag);
 int				free_args(t_args *args, int flag);

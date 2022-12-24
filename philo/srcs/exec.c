@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/23 19:24:17 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/24 13:32:02 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	gets_forks(t_philo *ph)
 {
-	if (is_dead(ph))
+	if (is_dead(ph) || check_dead(ph))
 		return ;
 	if (pthread_mutex_lock(&ph->args->mutex[ph->n]))
 		handle_thread_error(ph->args, ph, FAILED_MUTEX_LOCK);
@@ -40,7 +40,7 @@ void	gets_forks(t_philo *ph)
 
 void	check_both_forks(t_philo *p)
 {
-	if (is_dead(p))
+	if (is_dead(p) || check_dead(p))
 		return ;
 	gettimeofday(&p->tp, NULL);
 	if (p->l_fork && p->r_fork)
@@ -71,7 +71,7 @@ void	eats(t_philo *ph)
 	t_args			*a;
 
 	a = ph->args;
-	if (is_dead(ph))
+	if (is_dead(ph) || check_dead(ph))
 		return ;
 	gettimeofday(&ph->last_meal, NULL);
 	gettimeofday(&ph->tp, NULL);
@@ -84,8 +84,6 @@ void	sleeps(t_philo *ph)
 	t_args			*a;
 
 	a = ph->args;
-	if (is_dead(ph))
-		return ;
 	if (pthread_mutex_lock(&a->mutex[ph->n]))
 		handle_thread_error(a, ph, FAILED_MUTEX_LOCK);
 	a->fork[ph->n] = 1;
@@ -98,7 +96,7 @@ void	sleeps(t_philo *ph)
 		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
 	ph->l_fork = 0;
 	ph->r_fork = 0;
-	if (is_dead(ph))
+	if (is_dead(ph) || check_dead(ph))
 		return ;
 	gettimeofday(&ph->tp, NULL);
 	printf("[%lld] %d is sleeping\n",
@@ -108,22 +106,48 @@ void	sleeps(t_philo *ph)
 
 int	is_dead(t_philo *ph)
 {
+	int	flag;
+	int	i;
+
+	i = 0;
 	gettimeofday(&ph->tp, NULL);
 	if (ft_utdiff(&ph->tp, &ph->last_meal) > ph->args->die_tm
-		&& !ph->args->dead)
+		&& !check_dead(ph))
 	{
 		if (pthread_mutex_lock(&ph->args->safety))
-			ph->args->dead = FAILED_MUTEX_LOCK;
-		if (!ph->args->dead)
-		{
-			ph->dead = 1;
-			ph->args->dead = ph->n + 1;
-			gettimeofday(&ph->tp, NULL);
-			printf("[%lld] %d died\n",
-				ft_utdiff(&ph->tp, &ph->args->start), ph->n + 1);
-		}
+			flag = FAILED_MUTEX_LOCK;
+		ph->args->dead = ph->n + 1;
+		i = 1;
 		if (pthread_mutex_unlock(&ph->args->safety))
-			ph->args->dead = FAILED_MUTEX_UNLOCK;
+			flag = FAILED_MUTEX_UNLOCK;
 	}
-	return (ph->args->dead);
+	if (i)
+	{
+		gettimeofday(&ph->tp, NULL);
+		printf("[%lld] %d died\n",
+			ft_utdiff(&ph->tp, &ph->args->start), ph->n + 1);
+	}
+	return (i || flag);
+}
+
+int	check_dead(t_philo *ph)
+{
+	int	i;
+
+	i = 0;
+	if (pthread_mutex_lock(&ph->args->safety))
+		ft_puterror(FAILED_MUTEX_LOCK);
+	i = ph->args->dead;
+	if (pthread_mutex_unlock(&ph->args->safety))
+		ft_puterror(FAILED_MUTEX_UNLOCK);
+	return (i);
+}
+
+void	stop_threads(t_args *args, int flag)
+{
+	if (pthread_mutex_lock(&args->safety))
+		ft_puterror(FAILED_MUTEX_LOCK);
+	args->dead = flag;
+	if (pthread_mutex_unlock(&args->safety))
+		ft_puterror(FAILED_MUTEX_UNLOCK);
 }
