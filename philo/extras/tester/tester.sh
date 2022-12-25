@@ -6,24 +6,24 @@
 #    By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/20 15:19:42 by lkrief            #+#    #+#              #
-#    Updated: 2022/12/23 22:56:24 by lkrief           ###   ########.fr        #
+#    Updated: 2022/12/25 01:25:50 by lkrief           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# if [[ $1 -eq "log" ]]
-# then
-# 	cat file | grep "] $2 ";
-# 	exit;
-# else
+if [[ $1 -eq "log" ]]
+then
+	cat file | grep "] $2 ";
+	exit;
+else
 	./philo $1 $2 $3 $4 $5 | tee file;
 	> log_file;
-# fi
+fi
 
 s="";
-# if [[ $(uname | grep Linux) ]]
-# then
-# 	s="   ";
-# fi
+if [[ $(uname | grep Linux) ]]
+then
+	s="   ";
+fi
 
 x=1;
 while [[ "$x" -le $1 ]]

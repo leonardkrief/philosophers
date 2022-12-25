@@ -6,13 +6,11 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/24 12:50:05 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/25 05:11:03 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
 
 void	*philosophers(void *philo)
 {
@@ -21,19 +19,55 @@ void	*philosophers(void *philo)
 
 	ph = (t_philo *)philo;
 	a = ph->args;
-	while (!check_dead(ph) && (ph->ate++ < a->eat_nb || !a->eat_nb))
+	while (!died(ph, 0) && (ph->ate++ < a->eat_nb || !a->eat_nb))
 	{
-		while ((!ph->l_fork || !ph->r_fork) && !check_dead(ph))
+		while ((!ph->l_fork || !ph->r_fork) && !died(ph, 0))
 			gets_forks(ph);
-		if (!check_dead(ph))
+		// printf("(%d) go2\n", ph->n + 1);
+		if (!died(ph, 0))
 			eats(ph);
-		if (!check_dead(ph))
+		// printf("(%d) go3\n", ph->n + 1);
+		if (!died(ph, 0))
 			sleeps(ph);
+		// printf("(%d) go4\n", ph->n + 1);
 		gettimeofday(&ph->tp, NULL);
-		if (!check_dead(ph))
+		if (!died(ph, 0))
 			printf("[%lld] %d is thinking\n",
 				ft_utdiff(&ph->tp, &a->start), ph->n + 1);
 	}
+	return (NULL);
+}
+
+void	*check_deaths(void *philos)
+{
+	unsigned int	i;
+	int	trigger;
+	t_philo	*ph;
+
+	trigger = 0;
+	ph = (*(t_philo **)philos);
+	while (!trigger)
+	{
+		i = 0;
+		while (i < ph[0].args->phi_nb && !trigger)
+		{
+			if (pthread_mutex_lock(&ph[i].args->dead[ph[0].n]))
+				ft_puterror(FAILED_MUTEX_LOCK);
+			if (ph[i].dead)
+				trigger = 1;
+			if (pthread_mutex_unlock(&ph[i++].args->dead[ph[0].n]))
+				ft_puterror(FAILED_MUTEX_UNLOCK);
+		}
+		// printf("deaths: (%d) %d   (%d) %d   (%d) %d   (%d) %d\n",
+		// 	 ph[0].n + 1, ph[0].dead, ph[1].n + 1, ph[1].dead, 
+		// 	 ph[2].n + 1, ph[2].dead, ph[3].n + 1, ph[3].dead);
+	}
+	i = -1;
+	while (++i < ph[0].args->phi_nb)
+		died(&ph[i], -1);
+	// printf("last deaths: (%d) %d   (%d) %d   (%d) %d   (%d) %d\n",
+	// 	ph[0].n + 1, ph[0].dead, ph[1].n + 1, ph[1].dead, 
+	// 	ph[2].n + 1, ph[2].dead, ph[3].n + 1, ph[3].dead);
 	return (NULL);
 }
 
@@ -59,7 +93,6 @@ int	main(int ac, char **av)
 		if (philos == NULL)
 			free_args(&args, FAILED_MALLOC | FREE_ALL);
 		flag = exec_threads(&args, philos);
-		fflush(stderr);
 		free(philos);
 		free_args(&args, FREE_ALL | DESTROY_ALL);
 	}

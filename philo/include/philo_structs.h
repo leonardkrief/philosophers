@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/24 12:39:01 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/25 02:30:27 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@
 # define FAILED_MUTEX_UNLOCK	0b0000011010000000
 # define FAILED_GET_TIME		0b0000011100000000
 
-# define FREE_ALL				0b0011100000000000
+# define FREE_ALL				0b0111100000000000
 # define FREE_THREADS			0b0000100000000000
-# define FREE_MUTEX				0b0001000000000000
-# define FREE_FORKS				0b0010000000000000
+# define FREE_FORKS				0b0001000000000000
+# define FREE_MUTEX_FORKS		0b0010000000000000
+# define FREE_MUTEX_DEAD		0b0100000000000000
 
-# define DESTROY_ALL			0b1100000000000000
-# define DESTROY_ONE_MORE		0b0100000000000000
+# define DESTROY_ALL			0b1000000000000000
 # define DESTROY_MUTEX			0b1000000000000000
 
 // Philo n°i needs forks n°i and n°i+1 to eat
@@ -47,11 +47,11 @@ typedef struct s_args{
 	unsigned int	slp_tm;
 	unsigned int	eat_nb;
 	struct timeval	start;
+	int				exec;
 	pthread_t		*th;
 	unsigned char	*fork;
-	pthread_mutex_t	safety;
+	pthread_mutex_t	*dead;
 	pthread_mutex_t	*mutex;
-	int				dead;
 }	t_args;
 
 typedef struct s_philo{
@@ -60,6 +60,7 @@ typedef struct s_philo{
 	unsigned int	ate;
 	unsigned char	r_fork;
 	unsigned char	l_fork;
+	int				dead;
 	struct timeval	last_meal;
 	struct timeval	tp;
 }	t_philo;

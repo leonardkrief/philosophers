@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/24 12:51:13 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/25 04:39:53 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	init_args_stack(t_args *args, int ac, char **av)
 	else
 		args->eat_nb = 0;
 	args->dead = 0;
+	args->exec = 0;
 	args->start.tv_sec = 0;
 	args->start.tv_usec = 0;
 	args->th = NULL;
@@ -32,30 +33,20 @@ void	init_args_stack(t_args *args, int ac, char **av)
 
 int	init_args_heap(t_args *args)
 {
-	int	i;
-
-	if (pthread_mutex_init(&args->safety, NULL))
-		return (free_args(args, FAILED_INIT_MUTEX));
-	args->th = malloc (sizeof(*args->th) * (args->phi_nb));
+	args->th = malloc (sizeof(*args->th) * (args->phi_nb + 1));
 	if (args->th == NULL)
 		return (free_args(args, FAILED_MALLOC));
-	args->fork = ft_calloc ((args->phi_nb), sizeof(*args->fork));
+	args->fork = malloc (sizeof(*args->fork) * args->phi_nb);
 	if (args->fork == NULL)
 		return (free_args(args, FAILED_MALLOC | FREE_THREADS));
 	memset(args->fork, 1, args->phi_nb);
 	args->mutex = malloc (sizeof(*args->mutex) * args->phi_nb);
 	if (args->mutex == NULL)
 		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS));
-	i = -1;
-	while (++i < (int)args->phi_nb)
-	{
-		if (pthread_mutex_init(&args->mutex[i], NULL))
-		{
-			while (--i >= 0)
-				pthread_mutex_destroy(&args->mutex[i]);
-			return (free_args(args, FAILED_INIT_MUTEX | FREE_ALL));
-		}
-	}
+	args->dead = malloc (sizeof(*args->dead) * args->phi_nb);
+	if (args->dead == NULL)
+		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS
+			| FREE_MUTEX_FORKS));
 	return (0);
 }
 
@@ -66,10 +57,16 @@ int	init_philo(t_args *args, t_philo *philo, int i)
 	philo->ate = 0;
 	philo->r_fork = 0;
 	philo->l_fork = 0;
+	philo->dead = 0;
 	if (gettimeofday(&philo->last_meal, NULL))
 		return (FAILED_GET_TIME);
 	if (pthread_mutex_init(&args->mutex[i], NULL))
 		return (FAILED_INIT_MUTEX);
+	if (pthread_mutex_init(&args->dead[i], NULL))
+	{
+		pthread_mutex_destroy(&args->mutex[i]);
+		return (FAILED_INIT_MUTEX);
+	}
 	return (0);
 }
 
@@ -79,23 +76,26 @@ int	exec_threads(t_args *args, t_philo *philos)
 	unsigned int	x;
 
 	if (gettimeofday(&args->start, NULL))
-		args->dead += 1;
-	if (pthread_mutex_lock(&args->safety))
-		return (free_args(args, FAILED_MUTEX_LOCK | FREE_ALL | DESTROY_ALL));
+		args->exec = -1;
 	i = -1;
-	while (++i < args->phi_nb && !args->dead)
+	while (++i < args->phi_nb && !args->exec)
 	{
-		if (init_philo(args, &philos[i], i)
-			|| pthread_create(&args->th[i], NULL, &philosophers, &philos[i]))
-			args->dead += 2;
+		if (init_philo(args, &philos[i], i))
+			args->exec = i;
+		if (!args->exec
+			&& pthread_create(&args->th[i], NULL, &philosophers, &philos[i]))
+		{
+			if (i > 0)
+				died(&philos[0], FAILED_CRT_THRD);
+		}
 	}
-	if (pthread_mutex_unlock(&args->safety))
-		args->dead += 4;
+	if (pthread_create(&args->th[args->phi_nb], NULL, &check_deaths, &philos))
+		ft_puterror(FAILED_CRT_THRD);
 	x = 0;
-	while (x < i)
+	while (x < (args->phi_nb + 1) * (!args->exec) + args->exec * (args->exec != 0))
 	{
 		if (pthread_join(args->th[x++], NULL))
-			args->dead += 8;
+			died(&philos[0], FAILED_JOIN_THRD);
 	}
-	return (args->dead);
+	return (args->exec);
 }
