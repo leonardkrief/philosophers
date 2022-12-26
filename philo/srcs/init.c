@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/26 02:49:33 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 22:14:48 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,9 @@ void	init_args_stack(t_args *args, int ac, char **av)
 	args->slp_tm = ft_atoi_ph(av[4]);
 	if (ac == 6)
 		args->eat_nb = ft_atoi_ph(av[5]);
-	else
-		args->eat_nb = 0;
-	args->exec = 0;
-	args->th = NULL;
-	args->fork = NULL;
-	args->mutex = NULL;
 }
 
-int	init_args_heap(t_args *args)
+int	init_args_heap_1(t_args *args)
 {
 	args->th = malloc(sizeof(*args->th) * (args->phi_nb + 1));
 	if (args->th == NULL)
@@ -38,17 +32,47 @@ int	init_args_heap(t_args *args)
 	if (args->fork == NULL)
 		return (free_args(args, FAILED_MALLOC | FREE_THREADS));
 	memset(args->fork, 1, args->phi_nb);
-	if (pthread_mutex_init(&args->print, NULL))
-		return (free_args(args, FAILED_MALLOC | FREE_THREADS));
-	if (pthread_mutex_init(&args->keeper, NULL))
-		return (free_args(args, FAILED_MALLOC | FREE_THREADS));
 	args->mutex = malloc(sizeof(*args->mutex) * args->phi_nb);
 	if (args->mutex == NULL)
 		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS));
 	args->death = malloc(sizeof(*args->death) * args->phi_nb);
 	if (args->death == NULL)
-		return (free_args(args,
-				FAILED_MALLOC | FREE_THREADS | FREE_FORKS | FREE_MUTEX_FORKS));
+		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS
+			| FREE_MUTEX_FORKS));
+	if (pthread_mutex_init(&args->print, NULL))
+		return (free_args(args, FAILED_INIT_MUTEX | FREE_THREADS | FREE_FORKS
+			| FREE_MUTEX_FORKS | FREE_DEATH));
+	if (pthread_mutex_init(&args->keeper, NULL))
+		return (free_args(args, FAILED_INIT_MUTEX | FREE_THREADS | FREE_FORKS
+			| FREE_MUTEX_FORKS | FREE_DEATH | DESTROY_MUT_PRINT));
+	return (0);
+}
+
+int	init_args_heap_2(t_args *args)
+{
+	unsigned int	i;
+	char			free;
+
+	free = 0;
+	i = -1;
+	while (!free && ++i < args->phi_nb)
+	{
+		if (!free && pthread_mutex_init(&args->mutex[i], NULL))
+			free = 1;
+		while (!free && --i)
+			pthread_mutex_destroy(&args->mutex[i]);
+	}
+	i = -1;
+	while (!free && ++i < args->phi_nb)
+	{
+		if (!free && pthread_mutex_init(&args->death[i].death, NULL))
+			free = 1;
+		while (!free && --i)
+			pthread_mutex_destroy(&args->death[i].death);
+	}
+	if (free)
+		return (free_args(args, FAILED_INIT_MUTEX | FREE_ALL
+			| DESTROY_MUT_PRINT | DESTROY_MUT_KEEPER));
 	return (0);
 }
 
@@ -69,17 +93,6 @@ int	exec_threads(t_args *args, t_philo *philos)
 	unsigned int	x;
 
 	args->start = get_time();
-	i = -1;
-	while (++i < args->phi_nb)
-	{
-		if (pthread_mutex_init(&args->mutex[i], NULL))
-			return (FAILED_INIT_MUTEX);
-		if (pthread_mutex_init(&args->death[i].death, NULL))
-		{
-			pthread_mutex_destroy(&args->mutex[i]);
-			return (FAILED_INIT_MUTEX);
-		}
-	}
 	i = -1;
 	while (++i < args->phi_nb && !args->exec)
 	{

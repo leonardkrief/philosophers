@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/26 02:36:46 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 21:13:36 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define FREE_MUTEX_DEAD		0b0100000000000000
 
 # define DESTROY_ALL			0b1000000000000000
-# define DESTROY_MUTEX			0b1000000000000000
+# define DESTROY_MUTEX			0b100000000000000	
 
 // Philo n°i needs forks n°i and n°i+1 to eat
 // Forks are available if it is 1, unavailable if 0
