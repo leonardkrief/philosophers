@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/26 02:57:34 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 20:38:20 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,6 @@ int	eats(t_philo *ph)
 	gettimeofday(&ph->args->death[ph->n].last_meal, NULL);
 	pthread_mutex_unlock(ph->death);
 	ph->ate++;
-	if (ph->ate == ph->args->eat_nb)
-	{
-		printf
-		return (end_dinner(ph));
-	}
 	return (0);
 }
 
@@ -97,6 +92,8 @@ int	sleeps(t_philo *ph)
 		handle_thread_error(a, ph, FAILED_MUTEX_UNLOCK);
 	ph->l_fork = 0;
 	ph->r_fork = 0;
+	if (ph->ate == ph->args->eat_nb)
+		return (end_dinner(ph));
 	if (printlock(ph, "is sleeping\n", 0))
 		return (1);
 	ft_usleep(ph->args->slp_tm);
