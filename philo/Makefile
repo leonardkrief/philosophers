@@ -5,8 +5,8 @@ SRCS			=	srcs/exec.c \
 					srcs/utils.c
 OBJS			=	${SRCS:.c=.o}
 
-CC				=	gcc
-CFLAGS			=	-Wall -Wextra -Werror -O3
+CC				=	cc
+CFLAGS			=	-Wall -Wextra -Werror -g3 -O3
 INCLUDE			=	-Iinclude
 RM				=	rm -rf
 

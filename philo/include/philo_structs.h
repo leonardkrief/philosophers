@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/25 02:30:27 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 02:36:46 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,25 @@
 
 // Philo n°i needs forks n°i and n°i+1 to eat
 // Forks are available if it is 1, unavailable if 0
+
+typedef struct t_death t_death;
 typedef struct s_args{
 	unsigned int	phi_nb;
 	unsigned int	die_tm;
 	unsigned int	eat_tm;
 	unsigned int	slp_tm;
 	unsigned int	eat_nb;
-	struct timeval	start;
+	long			start;
+	long			time;
 	int				exec;
+	int				one_died;
+	int				plate;
 	pthread_t		*th;
 	unsigned char	*fork;
-	pthread_mutex_t	*dead;
 	pthread_mutex_t	*mutex;
+	pthread_mutex_t	print;
+	pthread_mutex_t	keeper;
+	t_death			*death;
 }	t_args;
 
 typedef struct s_philo{
@@ -61,8 +68,13 @@ typedef struct s_philo{
 	unsigned char	r_fork;
 	unsigned char	l_fork;
 	int				dead;
-	struct timeval	last_meal;
-	struct timeval	tp;
+	pthread_mutex_t	*death;
 }	t_philo;
+
+typedef struct t_death
+{
+	struct timeval	last_meal;
+	pthread_mutex_t	death;
+}	t_death;
 
 #endif

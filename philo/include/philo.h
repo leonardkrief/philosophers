@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/25 04:32:57 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 00:19:11 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,16 @@
 # include "philo_structs.h"
 
 // exec.c
-void	gets_forks(t_philo *ph);
-void	check_both_forks(t_philo *p);
-void	eats(t_philo *ph);
-void	sleeps(t_philo *ph);
-int	died(t_philo *ph, int flag);
+int	gets_forks(t_philo *ph);
+int	check_both_forks(t_philo *p);
+int	eats(t_philo *ph);
+int	sleeps(t_philo *ph);
+int	died(t_philo *ph);
 
 // free.c
 void	ft_puterror(int flag);
 int	free_args(t_args *args, int flag);
-void	handle_thread_error(t_args *args, t_philo *ph, int flag);
+int	handle_thread_error(t_args *args, t_philo *ph, int flag);
 
 // init.c
 void	init_args_stack(t_args *args, int ac, char **av);
@@ -50,6 +50,11 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putnbr_fd(int nb, int fd);
 void	*ft_calloc(size_t count, size_t size);
 unsigned int	ft_atoi_ph(const char *str);
-long long int	ft_utdiff(struct timeval *t1, struct timeval *t2);
+long int	ft_utdiff(long t1, long t2);
+int	printlock(t_philo *ph, char *str, int i);
+long	get_time(void);
+long	convert_time(struct timeval tp);
+int	end_dinner(t_philo *ph);
+void	ft_usleep(long time_ms);
 
 #endif

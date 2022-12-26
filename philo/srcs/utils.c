@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/22 20:06:03 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 02:50:14 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,22 +73,57 @@ unsigned int	ft_atoi_ph(const char *str)
 	return (nb);
 }
 
-long long int	ft_utdiff(struct timeval *t1, struct timeval *t2)
+long int	ft_utdiff(long t1, long t2)
 {
-	long long int	dif;
+	return (t1 - t2);
+}
 
-	if (t1 == NULL && t2 == NULL)
-		return (0);
-	else if (t1 == NULL)
-		dif = -(1000000 * t2->tv_sec + t2->tv_usec);
-	else if (t2 == NULL)
-		dif = 1000000 * t1->tv_sec + t1->tv_usec;
-	else
-		dif = 1000000 * (t1->tv_sec - t2->tv_sec) + (t1->tv_usec - t2->tv_usec);
-	if (dif < LONG_MIN)
-		return (LONG_MIN / 1000);
-	else if (dif > LONG_MAX)
-		return (LONG_MAX / 1000);
-	else
-		return (dif / 1000);
+int	printlock(t_philo *ph, char *str, int i)
+{
+	if (died(ph))
+		return (1);
+	if (pthread_mutex_lock(&ph->args->print))
+		handle_thread_error(ph->args, ph, FAILED_MUTEX_LOCK);
+	printf("[%ld] %d %s",
+			ft_utdiff(get_time(), ph->args->start),
+			ph->n + 1, str);
+	if (i)
+		printf("[%ld] %d %s",
+				ft_utdiff(get_time(), ph->args->start),
+				ph->n + 1, str);
+	if (pthread_mutex_unlock(&ph->args->print))
+		handle_thread_error(ph->args, ph, FAILED_MUTEX_UNLOCK);
+	return (0);
+}
+
+long	get_time(void)
+{
+	struct timeval	tp;
+
+	gettimeofday(&tp, NULL);
+	return (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+}
+
+long	convert_time(struct timeval tp)
+{
+	return (tp.tv_sec * 1000 + tp.tv_usec / 1000);
+}
+
+int	end_dinner(t_philo *ph)
+{
+	if (pthread_mutex_lock(&ph->args->keeper))
+		handle_thread_error(ph->args, ph, FAILED_MUTEX_LOCK);
+	ph->args->plate++;
+	if (pthread_mutex_unlock(&ph->args->keeper))
+		handle_thread_error(ph->args, ph, FAILED_MUTEX_UNLOCK);
+	return (1);
+}
+
+void	ft_usleep(long time_ms)
+{
+	long begin;
+
+	begin = get_time();
+	while (get_time() - begin < time_ms)
+		usleep(10);
 }

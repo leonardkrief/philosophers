@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/25 03:51:34 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/26 02:37:11 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	free_args(t_args *args, int flag)
 		while (i < args->phi_nb)
 		{
 			pthread_mutex_destroy(&args->mutex[i]);
-			pthread_mutex_destroy(&args->dead[i++]);
+			pthread_mutex_destroy(&args->death[i++].death);
 		}
 	}
 	if (flag & FREE_MUTEX_FORKS)
@@ -59,18 +59,15 @@ int	free_args(t_args *args, int flag)
 	return (flag & EXIT_FLAG);
 }
 
-void	handle_thread_error(t_args *args, t_philo *ph, int flag)
+int	handle_thread_error(t_args *args, t_philo *ph, int flag)
 {
 	t_args	*a;
 
 	a = args;
 	if (a != NULL)
 		a = NULL;
-	if (!died(ph, 0))
-	{
-		died(ph, flag);
-		ft_putnbr_fd(ph->n, 2);
-		ft_putstr_fd("  ERROR  ", 2);
-		ft_puterror(flag);
-	}
+	ft_putnbr_fd(ph->n, 2);
+	ft_putstr_fd("  ERROR  ", 2);
+	ft_puterror(flag);
+	return (1);
 }
