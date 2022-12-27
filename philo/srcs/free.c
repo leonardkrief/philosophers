@@ -6,13 +6,13 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/26 02:37:11 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/27 13:15:20 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_puterror(int flag)
+int	ft_puterror(int flag)
 {
 	if ((flag & FAILURE & FAILED_CRT_THRD) && (flag & STDERR_FLAG))
 		ft_putstr_fd("Failed creating thread\n", STDERR_FILENO);
@@ -30,31 +30,53 @@ void	ft_puterror(int flag)
 		ft_putstr_fd("Failed lock mutex\n", STDERR_FILENO);
 	else if ((flag & FAILURE & FAILED_MUTEX_UNLOCK) && (flag & STDERR_FLAG))
 		ft_putstr_fd("Failed unlock mutex\n", STDERR_FILENO);
+	return (0);
+}
+
+int	setexec_puterror(t_args *args, int value, int flag)
+{
+	args->exec = value;
+	ft_puterror(flag);
+	return (value);
+}
+
+void	destroy_mutex_tab(pthread_mutex_t *tab, int size)
+{
+	int	i;
+
+	i = -1;
+	while (++i < size)
+	{
+		if (pthread_mutex_destroy(&tab[i]))
+			ft_puterror(FAILED_DESTROY_MUTEX);
+	}
 }
 
 int	free_args(t_args *args, int flag)
 {
 	unsigned int	i;
 
+	if (flag & DESTROY_MUT_PRINT)
+		destroy_mutex_tab(&args->print, 1);
+	if (flag & DESTROY_MUT_KEEPER)
+		destroy_mutex_tab(&args->keeper, 1);
+	if (flag & DESTROY_MUT_FORKS)
+		destroy_mutex_tab(args->mutex, args->phi_nb);
+	i = 0;
+	while ((flag & DESTROY_MUT_DEATH) && i < args->phi_nb)
+	{
+		if (pthread_mutex_destroy(&args->death[i++].death))
+			ft_puterror(FAILED_DESTROY_MUTEX);
+	}
 	if (flag & FREE_THREADS)
 		free(args->th);
 	if (flag & FREE_FORKS)
 		free(args->fork);
-	if (flag & DESTROY_MUTEX)
-	{
-		i = 0;
-		while (i < args->phi_nb)
-		{
-			pthread_mutex_destroy(&args->mutex[i]);
-			pthread_mutex_destroy(&args->death[i++].death);
-		}
-	}
 	if (flag & FREE_MUTEX_FORKS)
 		free(args->mutex);
-	if (flag & FREE_MUTEX_DEAD)
-		free(args->mutex);
-	ft_puterror(flag);
-	if (flag & EXIT_FLAG)
+	if (flag & FREE_DEATH)
+		free(args->death);
+	if (!ft_puterror(flag) && (flag & EXIT_FLAG))
 		exit(-(flag & FAILURE));
 	return (flag & EXIT_FLAG);
 }

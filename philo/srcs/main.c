@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/26 02:49:30 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/27 13:44:22 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	*philosophers(void *philo)
 	{
 		if (a->phi_nb % 2 && ph->ate)
 			ft_usleep(ph->args->die_tm * 0.25);
+		if (a->phi_nb == 1)
+			printlock(ph, "has taken a fork\n", 0);
 		while ((!ph->l_fork || !ph->r_fork) && !died(ph))
 			gets_forks(ph);
 		if (eats(ph))
@@ -39,7 +41,6 @@ void	*check_deaths(void *philos)
 {
 	unsigned int	i;
 	t_philo			*ph;
-	long			time;
 	unsigned int	eat;
 
 	ph = (*(t_philo **)philos);
@@ -48,32 +49,47 @@ void	*check_deaths(void *philos)
 		i = -1;
 		while (++i < ph[0].args->phi_nb)
 		{
-			if (pthread_mutex_lock(&ph->args->death[i].death))
-				ft_puterror(FAILED_MUTEX_LOCK);
-			time = ft_utdiff(get_time(),
-					convert_time(ph->args->death[i].last_meal));
-			if (pthread_mutex_unlock(&ph->args->death[i].death))
-				ft_puterror(FAILED_MUTEX_UNLOCK);
-			if (time >= ph->args->die_tm)
-			{
-				pthread_mutex_lock(&ph->args->keeper);
-				ph->args->one_died = 1;
-				pthread_mutex_unlock(&ph->args->keeper);
-				pthread_mutex_lock(&ph->args->print);
-				printf("[%ld] %d %s", get_time() - ph->args->start, ph->n + 1,
-						"died\n");
-				pthread_mutex_unlock(&ph->args->print);
+			if (born_to_kill(ph, i))
 				return (NULL);
-			}
 		}
-		pthread_mutex_lock(&ph->args->keeper);
+		if (pthread_mutex_lock(&ph->args->keeper))
+			ft_puterror(FAILED_MUTEX_LOCK);
 		eat = ph->args->plate;
-		pthread_mutex_unlock(&ph->args->keeper);
+		if (pthread_mutex_unlock(&ph->args->keeper))
+			ft_puterror(FAILED_MUTEX_UNLOCK);
 		if (eat == ph->args->phi_nb)
 			return (NULL);
 		usleep(100);
 	}
 	return (NULL);
+}
+
+int	born_to_kill(t_philo *ph, int i)
+{
+	long			time;
+
+	if (pthread_mutex_lock(&ph->args->death[i].death))
+		ft_puterror(FAILED_MUTEX_LOCK);
+	time = ft_utdiff(get_time(),
+			convert_time(ph->args->death[i].last_meal));
+	if (pthread_mutex_unlock(&ph->args->death[i].death))
+		ft_puterror(FAILED_MUTEX_UNLOCK);
+	if (time >= ph->args->die_tm || ph->args->exec)
+	{
+		if (pthread_mutex_lock(&ph->args->keeper))
+			ft_puterror(FAILED_MUTEX_LOCK);
+		ph->args->one_died = 1;
+		if (pthread_mutex_unlock(&ph->args->keeper))
+			ft_puterror(FAILED_MUTEX_UNLOCK);
+		if (pthread_mutex_lock(&ph->args->print))
+			ft_puterror(FAILED_MUTEX_LOCK);
+		printf("[%ld] %d %s", get_time() - ph->args->start, ph->n + 1,
+			"died\n");
+		if (pthread_mutex_unlock(&ph->args->print))
+			ft_puterror(FAILED_MUTEX_UNLOCK);
+		return (1);
+	}
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -87,8 +103,6 @@ int	main(int ac, char **av)
 		ft_putstr_fd("Too few arguments\n", 2);
 	else if (ac >= 7)
 		ft_putstr_fd("Too much arguments\n", 2);
-	else if (ft_atoi_ph(av[1]) <= 1)
-		ft_putstr_fd("Not enough philosophers\n", 2);
 	else
 	{
 		init_args_stack(&args, ac, av);
@@ -98,8 +112,8 @@ int	main(int ac, char **av)
 		if (philos == NULL)
 			free_args(&args, FAILED_MALLOC | FREE_ALL);
 		flag = exec_threads(&args, philos);
-		// free(philos);
-		// free_args(&args, FREE_ALL | DESTROY_ALL);
+		free(philos);
+		free_args(&args, FREE_ALL | DESTROY_ALL);
 	}
 	return (flag);
 }
