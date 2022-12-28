@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/28 19:44:43 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 19:50:35 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	sleeps(t_philo *ph)
 	if (printlock(ph, "is sleeping\n", 0))
 		return (1);
 	ft_usleep(ph->args->slp_tm);
-	return (0);ft_usleep(a->eat_tm);
+	return (0);
 }
 
 int	died(t_philo *ph)
