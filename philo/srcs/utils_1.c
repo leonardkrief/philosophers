@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/27 13:46:05 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 17:34:44 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void	*ft_calloc(size_t count, size_t size)
 	return (tab);
 }
 
-unsigned int	ft_atoi_ph(const char *str)
+int	ft_atoi_ph(const char *str)
 {
 	unsigned int			i;
-	long long unsigned int	nb;
+	long long int			nb;
 
 	nb = 0;
 	i = 0;
@@ -63,13 +63,12 @@ unsigned int	ft_atoi_ph(const char *str)
 		i++;
 	if (str[i] == '+')
 		i++;
-	while (str[i] >= '0' && str[i] <= '9' && nb <= INT_MAX / 1000)
+	while (str[i] >= '0' && str[i] <= '9' && nb <= INT_MAX)
 		nb = 10 * nb + str[i++] - '0';
-	if (nb > INT_MAX / 1000)
-	{
-		ft_putstr_fd("Input too big. Capped to INT_MAX / 1000\n", 2);
-		return (INT_MAX / 1000);
-	}
+	if (nb > INT_MAX)
+		return (-1);
+	if (!((str[i] >= 9 && str[i] <= 13) || str[i] == ' ' || str[i] == 0))
+		return (-1);
 	return (nb);
 }
 

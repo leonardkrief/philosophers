@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/27 13:39:27 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 19:44:43 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,24 +39,7 @@ int	check_both_forks(t_philo *p)
 {
 	if (p->l_fork && p->r_fork)
 		return (printlock(p, "has taken a fork\n", 1));
-	else if (p->l_fork)
-	{
-		if (pthread_mutex_lock(&p->args->mutex[p->n]))
-			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
-		p->args->fork[p->n] = 1;
-		if (pthread_mutex_unlock(&p->args->mutex[p->n]))
-			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
-		p->l_fork = 0;
-	}
-	else if (p->r_fork)
-	{
-		if (pthread_mutex_lock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
-			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
-		p->args->fork[(p->n + 1) % p->args->phi_nb] = 1;
-		if (pthread_mutex_unlock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
-			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
-		p->r_fork = 0;
-	}
+	usleep(100);
 	return (0);
 }
 
@@ -97,7 +80,7 @@ int	sleeps(t_philo *ph)
 	if (printlock(ph, "is sleeping\n", 0))
 		return (1);
 	ft_usleep(ph->args->slp_tm);
-	return (0);
+	return (0);ft_usleep(a->eat_tm);
 }
 
 int	died(t_philo *ph)
@@ -110,3 +93,32 @@ int	died(t_philo *ph)
 	pthread_mutex_unlock(&ph->args->keeper);
 	return (dead);
 }
+
+// impossibilite de deadlock mais aucun controle sur 
+// qui attrape les fourchettes. du coup le philo 3 par exemple peut
+// manger 2 fois de suite et tuer par la un autre philo
+// int	check_both_forks(t_philo *p)
+// {
+// 	if (p->l_fork && p->r_fork)
+// 		return (printlock(p, "has taken a fork\n", 1));
+// 	else if (p->l_fork)
+// 	{
+// 		if (pthread_mutex_lock(&p->args->mutex[p->n]))
+// 			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
+// 		p->args->fork[p->n] = 1;
+// 		if (pthread_mutex_unlock(&p->args->mutex[p->n]))
+// 			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
+// 		p->l_fork = 0;
+// 	}
+// 	else if (p->r_fork)
+// 	{
+// 		if (pthread_mutex_lock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
+// 			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
+// 		p->args->fork[(p->n + 1) % p->args->phi_nb] = 1;
+// 		if (pthread_mutex_unlock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
+// 			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
+// 		p->r_fork = 0;
+// 	}
+// 	usleep(50);
+// 	return (0);
+// }

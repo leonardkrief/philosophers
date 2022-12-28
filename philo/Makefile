@@ -4,10 +4,11 @@ SRCS			=	srcs/exec.c \
 					srcs/main.c \
 					srcs/utils_1.c \
 					srcs/utils_2.c
+
 OBJS			=	${SRCS:.c=.o}
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror -g3 -O3
+CFLAGS			=	-Wall -Wextra -Werror
 INCLUDE			=	-Iinclude
 RM				=	rm -rf
 
@@ -18,9 +19,6 @@ PHILOSOPHERS	=	philo
 
 ${PHILOSOPHERS}:	${OBJS}
 					${CC} ${CFLAGS} ${OBJS} -o ${PHILOSOPHERS}
-
-debug:				${OBJS}
-					${CC} ${CFLAGS} -g3 -fsanitize=thread ${OBJS} -o ${PHILOSOPHERS}
 
 all:			${PHILOSOPHERS}
 

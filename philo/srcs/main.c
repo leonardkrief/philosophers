@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/27 13:44:22 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 19:43:27 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@ void	*philosophers(void *philo)
 
 	ph = (t_philo *)philo;
 	a = ph->args;
+	if (ph->n % 2)
+		usleep(a->die_tm * 0.25);
 	while (1)
 	{
-		if (a->phi_nb % 2 && ph->ate)
-			ft_usleep(ph->args->die_tm * 0.25);
+		if (ph->n % 2 && ph->ate)
+			usleep(a->die_tm * 0.25);
 		if (a->phi_nb == 1)
 			printlock(ph, "has taken a fork\n", 0);
 		while ((!ph->l_fork || !ph->r_fork) && !died(ph))
@@ -39,9 +41,9 @@ void	*philosophers(void *philo)
 
 void	*check_deaths(void *philos)
 {
-	unsigned int	i;
+	int				i;
 	t_philo			*ph;
-	unsigned int	eat;
+	int				eat;
 
 	ph = (*(t_philo **)philos);
 	while (1)
@@ -59,7 +61,7 @@ void	*check_deaths(void *philos)
 			ft_puterror(FAILED_MUTEX_UNLOCK);
 		if (eat == ph->args->phi_nb)
 			return (NULL);
-		usleep(100);
+		usleep(50);
 	}
 	return (NULL);
 }
@@ -74,7 +76,7 @@ int	born_to_kill(t_philo *ph, int i)
 			convert_time(ph->args->death[i].last_meal));
 	if (pthread_mutex_unlock(&ph->args->death[i].death))
 		ft_puterror(FAILED_MUTEX_UNLOCK);
-	if (time >= ph->args->die_tm || ph->args->exec)
+	if (time > ph->args->die_tm || ph->args->exec)
 	{
 		if (pthread_mutex_lock(&ph->args->keeper))
 			ft_puterror(FAILED_MUTEX_LOCK);
@@ -99,13 +101,14 @@ int	main(int ac, char **av)
 	int		flag;
 
 	flag = 0;
-	if (ac <= 4)
-		ft_putstr_fd("Too few arguments\n", 2);
-	else if (ac >= 7)
-		ft_putstr_fd("Too much arguments\n", 2);
+	if (ac <= 4 || ac >= 7 || init_args_stack(&args, ac, av))
+	{
+		ft_putstr_fd("usage:\n\t./philo {nb_philos} {die_tm}", 2);
+		ft_putstr_fd(" {eat_tm} {sleep_tm} (max_eat)\n", 2);
+		ft_putstr_fd("\tinputs in ms is capped to 60,000 ms\n", 2);
+	}
 	else
 	{
-		init_args_stack(&args, ac, av);
 		if (init_args_heap(&args) != 0)
 			return (-1);
 		philos = malloc(sizeof(*philos) * args.phi_nb);

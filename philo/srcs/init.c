@@ -6,13 +6,13 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/27 13:10:18 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 17:42:25 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	init_args_stack(t_args *args, int ac, char **av)
+int	init_args_stack(t_args *args, int ac, char **av)
 {
 	memset(args, 0, sizeof(*args));
 	args->phi_nb = ft_atoi_ph(av[1]);
@@ -21,6 +21,10 @@ void	init_args_stack(t_args *args, int ac, char **av)
 	args->slp_tm = ft_atoi_ph(av[4]);
 	if (ac == 6)
 		args->eat_nb = ft_atoi_ph(av[5]);
+	if (args->phi_nb < 0 || args->eat_nb < 0 || args->die_tm < 0
+		|| args->eat_tm < 0 || args->slp_tm < 0)
+		return (1);
+	return (0);
 }
 
 int	init_args_heap(t_args *args)
@@ -49,7 +53,7 @@ int	init_args_heap(t_args *args)
 
 int	init_args_heap_2(t_args *args)
 {
-	unsigned int	i;
+	int				i;
 	char			free;
 
 	free = 0;
@@ -89,7 +93,7 @@ int	init_philo(t_args *args, t_philo *philo, int i)
 int	exec_threads(t_args *args, t_philo *philos)
 {
 	int				error;
-	unsigned int	i;
+	int				i;
 
 	error = 0;
 	args->start = get_time();

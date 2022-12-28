@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/27 13:15:20 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 17:06:24 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	destroy_mutex_tab(pthread_mutex_t *tab, int size)
 
 int	free_args(t_args *args, int flag)
 {
-	unsigned int	i;
+	int	i;
 
 	if (flag & DESTROY_MUT_PRINT)
 		destroy_mutex_tab(&args->print, 1);

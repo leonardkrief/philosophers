@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/27 13:50:24 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 17:05:37 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ typedef struct s_death
 }	t_death;
 
 typedef struct s_args{
-	unsigned int	phi_nb;
-	unsigned int	die_tm;
-	unsigned int	eat_tm;
-	unsigned int	slp_tm;
-	unsigned int	eat_nb;
+	int				phi_nb;
+	int				die_tm;
+	int				eat_tm;
+	int				slp_tm;
+	int				eat_nb;
 	long			start;
 	long			time;
 	int				exec;
@@ -72,7 +72,7 @@ typedef struct s_args{
 typedef struct s_philo{
 	t_args			*args;
 	unsigned int	n;
-	unsigned int	ate;
+	int				ate;
 	unsigned char	r_fork;
 	unsigned char	l_fork;
 	int				dead;

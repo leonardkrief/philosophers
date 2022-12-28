@@ -6,21 +6,17 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 13:19:25 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/24 13:21:31 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/28 15:17:16 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
 
 int main(int ac, char **av, char **ev)
 {
-	int	i = 0;
+	pthread_t th;
 
-	while (ev[i])
-	{
-		printf("%s\n", ev[i]);
-		i++;
-	}
-	return (0);
+	pthread_create (&th, NULL);
 }
