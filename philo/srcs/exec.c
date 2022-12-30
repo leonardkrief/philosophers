@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/28 19:50:35 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/30 19:15:36 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,6 @@ int	gets_forks(t_philo *ph)
 	if (pthread_mutex_unlock(&ph->args->mutex[(ph->n + 1) % ph->args->phi_nb]))
 		handle_thread_error(ph->args, ph, FAILED_MUTEX_UNLOCK);
 	return (check_both_forks(ph));
-}
-
-int	check_both_forks(t_philo *p)
-{
-	if (p->l_fork && p->r_fork)
-		return (printlock(p, "has taken a fork\n", 1));
-	usleep(100);
-	return (0);
 }
 
 int	eats(t_philo *ph)
@@ -94,31 +86,36 @@ int	died(t_philo *ph)
 	return (dead);
 }
 
-// impossibilite de deadlock mais aucun controle sur 
-// qui attrape les fourchettes. du coup le philo 3 par exemple peut
-// manger 2 fois de suite et tuer par la un autre philo
+int	check_both_forks(t_philo *p)
+{
+	if (p->l_fork && p->r_fork)
+		return (printlock(p, "has taken a fork\n", 1));
+	else if (p->l_fork)
+	{
+		if (pthread_mutex_lock(&p->args->mutex[p->n]))
+			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
+		p->args->fork[p->n] = 1;
+		if (pthread_mutex_unlock(&p->args->mutex[p->n]))
+			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
+		p->l_fork = 0;
+	}
+	else if (p->r_fork)
+	{
+		if (pthread_mutex_lock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
+			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
+		p->args->fork[(p->n + 1) % p->args->phi_nb] = 1;
+		if (pthread_mutex_unlock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
+			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
+		p->r_fork = 0;
+	}
+	usleep(50);
+	return (0);
+}
+
 // int	check_both_forks(t_philo *p)
 // {
 // 	if (p->l_fork && p->r_fork)
 // 		return (printlock(p, "has taken a fork\n", 1));
-// 	else if (p->l_fork)
-// 	{
-// 		if (pthread_mutex_lock(&p->args->mutex[p->n]))
-// 			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
-// 		p->args->fork[p->n] = 1;
-// 		if (pthread_mutex_unlock(&p->args->mutex[p->n]))
-// 			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
-// 		p->l_fork = 0;
-// 	}
-// 	else if (p->r_fork)
-// 	{
-// 		if (pthread_mutex_lock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
-// 			handle_thread_error(p->args, p, FAILED_MUTEX_LOCK);
-// 		p->args->fork[(p->n + 1) % p->args->phi_nb] = 1;
-// 		if (pthread_mutex_unlock(&p->args->mutex[(p->n + 1) % p->args->phi_nb]))
-// 			handle_thread_error(p->args, p, FAILED_MUTEX_UNLOCK);
-// 		p->r_fork = 0;
-// 	}
-// 	usleep(50);
+// 	usleep(300);
 // 	return (0);
 // }

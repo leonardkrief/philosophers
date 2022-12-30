@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/28 19:51:14 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/30 19:14:51 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ void	*philosophers(void *philo)
 	ph = (t_philo *)philo;
 	a = ph->args;
 	if (ph->n % 2)
-		usleep(a->die_tm * 0.25);
+		usleep(500);
 	while (1)
 	{
 		if (ph->n % 2 && ph->ate)
-			usleep(a->die_tm * 0.25);
+			usleep(500);
 		if (a->phi_nb == 1)
 			printlock(ph, "has taken a fork\n", 0);
 		while ((!ph->l_fork || !ph->r_fork) && !died(ph))
@@ -61,7 +61,7 @@ void	*check_deaths(void *philos)
 			ft_puterror(FAILED_MUTEX_UNLOCK);
 		if (eat == ph->args->phi_nb)
 			return (NULL);
-		usleep(50);
+		ft_usleep(1);
 	}
 	return (NULL);
 }
