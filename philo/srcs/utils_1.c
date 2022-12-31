@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/28 17:34:44 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/31 02:25:45 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,6 @@ void	ft_putnbr_fd(int nb, int fd)
 	write(fd, &c, 1);
 }
 
-void	*ft_calloc(size_t count, size_t size)
-{
-	void	*tab;
-
-	tab = malloc(count * size);
-	if (!tab)
-		return (NULL);
-	memset(tab, 0, size * count);
-	return (tab);
-}
-
 int	ft_atoi_ph(const char *str)
 {
 	unsigned int			i;
@@ -78,12 +67,21 @@ int	printlock(t_philo *ph, char *str, int i)
 		return (1);
 	if (pthread_mutex_lock(&ph->args->print))
 		handle_thread_error(ph->args, ph, FAILED_MUTEX_LOCK);
-	printf("[%ld] %d %s",
-		ft_utdiff(get_time(), ph->args->start), ph->n + 1, str);
+	printf("%06ld %d %s", get_time() - convert_time(ph->args->init_time),
+		ph->id + 1, str);
 	if (i)
-		printf("[%ld] %d %s",
-			ft_utdiff(get_time(), ph->args->start), ph->n + 1, str);
+		printf("%06ld %d %s", get_time() - convert_time(ph->args->init_time),
+			ph->id + 1, str);
 	if (pthread_mutex_unlock(&ph->args->print))
 		handle_thread_error(ph->args, ph, FAILED_MUTEX_UNLOCK);
 	return (0);
+}
+
+void	ft_usleep(long time_ms)
+{
+	long	begin;
+
+	begin = get_time();
+	while (get_time() - begin < time_ms)
+		usleep(10);
 }
