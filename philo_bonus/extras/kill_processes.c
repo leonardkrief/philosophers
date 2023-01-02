@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 13:19:25 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/02 02:13:52 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 05:30:36 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	print_post(sem_t *sem, int thread_id, pthread_mutex_t *mutex, int *sem_valu
 }
 
 
-#define	PROCESSES_NUMBER 5
+#define	PROCESSES_NUMBER 4
 #define	SEM_FORKS "/mysem"
 
 typedef struct s_routine_args
@@ -73,30 +73,10 @@ typedef struct s_routine_args
 	int				random;
 } t_routine_args;
 
-void	*routine(void *args)
-{
-	t_routine_args	*a;
-	sem_t			*sem;
-
-	a = ((t_routine_args *)args);
-	sem = sem_open(SEM_FORKS, 0);
-	usleep(a->pid_id * 100);
-	// printf("(%d) Launch  rand = %3d\n", a->pid_id, a->random);
-	fflush(stdout);
-	if (a->pid_id < PROCESSES_NUMBER - 2)
-		print_post(sem, a->pid_id, a->mutex, a->sem_value);
-	else if (a->pid_id < PROCESSES_NUMBER - 1)
-	{
-		print_wait(sem, a->pid_id, a->mutex, a->sem_value);
-		print_wait(sem, a->pid_id, a->mutex, a->sem_value);
-		print_wait(sem, a->pid_id, a->mutex, a->sem_value);
-	}
-	exit(0);
-}
-
 int main(int ac, char **av, char **ev)
 {
 	in_addr_t		i = 0;
+	int				random;
 	sem_t			*forks;
 	pid_t			pids[PROCESSES_NUMBER];
 	int				sem_value = 0;
@@ -109,25 +89,28 @@ int main(int ac, char **av, char **ev)
 		print_exit("Error opening semaphore\n");
 	if (pthread_mutex_init(&mutex, NULL))
 		print_exit("Error initializing mutex\n");
-	srand(time(NULL));
 	while (i < PROCESSES_NUMBER)
 	{
-		args.pid_id = i;
-		args.mutex = &mutex;
-		args.sem_value = &sem_value;
-		args.random = (rand() % 1000);
 		pids[i] = fork();
 		if (pids[i] < 0)
 			print_exit("Error forking\n");
-		if (pids[i] == 0)
-			routine(&args);
+		if (pids[i] != 0)
+		{
+			random = 4 - i;
+			printf("(%d) Waiting %ds\n", i, random);
+			fflush(stdout);
+			usleep(random * 1e6);
+			printf("(%d) Done\n", i);
+			exit(0);
+		}
 		i++;
 	}
 	i = 0;
-	while (i < PROCESSES_NUMBER)
+	while (i < PROCESSES_NUMBER - 2)
 	{
-		if (kill(pids[i], NULL, 0) == -1)
-			print_exit("Error waiting process\n");
+		printf("(-1) killing %d\n", pids[i]);
+		if (kill(pids[i], SIGTERM) == -1)
+			print_exit("Error killing process\n");
 		i++;
 	}
 	i = 0;
@@ -137,4 +120,7 @@ int main(int ac, char **av, char **ev)
 			print_exit("Error waiting process\n");
 		i++;
 	}
+	i = 0;
+	while (i < PROCESSES_NUMBER)
+		printf("(-1) pid = %d\n", pids[i++]);
 }
