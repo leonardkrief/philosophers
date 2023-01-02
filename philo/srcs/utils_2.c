@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/31 02:25:42 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 15:42:54 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ long	get_time(void)
 	return (tp.tv_sec * 1000 + tp.tv_usec / 1000);
 }
 
-long	get_time_death(void)
+long	get_time_us(void)
 {
 	struct timeval	tp;
 

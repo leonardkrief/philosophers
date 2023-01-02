@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/31 02:22:57 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 15:42:37 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	born_to_kill(t_philo *ph)
 	a = ph->args;
 	if (pthread_mutex_lock(&ph->death))
 		ft_puterror(FAILED_MUTEX_LOCK);
-	time = get_time_death() - convert_time_us(ph->last_meal);
+	time = get_time_us() - convert_time_us(ph->last_meal);
 	if (pthread_mutex_unlock(&ph->death))
 		ft_puterror(FAILED_MUTEX_UNLOCK);
 	if (time >= a->die_timer)

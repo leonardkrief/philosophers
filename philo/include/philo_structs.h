@@ -6,13 +6,20 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/31 02:18:11 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 16:26:42 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_STRUCTS_H
 # define PHILO_STRUCTS_H
 
+# include <limits.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/time.h>
+# include <unistd.h>
 # include "philo.h"
 
 # define STDERR_FLAG			0b0000000001000000000

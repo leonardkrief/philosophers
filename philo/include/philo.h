@@ -6,20 +6,13 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/31 02:25:53 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 16:26:23 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <limits.h>
-# include <pthread.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/time.h>
-# include <unistd.h>
 # include "philo_structs.h"
 
 // exec.c
@@ -58,7 +51,7 @@ void	ft_usleep(long time_ms);
 
 // utils_2.c
 long	get_time(void);
-long	get_time_death(void);
+long	get_time_us(void);
 long	convert_time(struct timeval tp);
 long	convert_time_us(struct timeval tp);
 int		end_dinner(t_philo *ph);
