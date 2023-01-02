@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/31 02:25:45 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 15:33:03 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,5 @@ void	ft_usleep(long time_ms)
 
 	begin = get_time();
 	while (get_time() - begin < time_ms)
-		usleep(10);
+		usleep(500);
 }
