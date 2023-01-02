@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/28 17:05:37 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/31 02:18:11 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,39 +44,34 @@
 // Philo n°i needs forks n°i and n°i+1 to eat
 // Forks are available if it is 1, unavailable if 0
 
-typedef struct s_death
-{
-	struct timeval	last_meal;
-	pthread_mutex_t	death;
-}	t_death;
-
 typedef struct s_args{
-	int				phi_nb;
-	int				die_tm;
-	int				eat_tm;
-	int				slp_tm;
-	int				eat_nb;
-	long			start;
+	int				total;
+	int				die_timer;
+	int				eat_timer;
+	int				slp_timer;
+	int				max_eat;
+	struct timeval	init_time;
 	long			time;
 	int				exec;
-	int				one_died;
-	int				plate;
-	pthread_t		*th;
+	int				died;
+	int				done;
+	pthread_t		*thread;
 	unsigned char	*fork;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	*mut_fork;
 	pthread_mutex_t	print;
 	pthread_mutex_t	keeper;
-	t_death			*death;
+	pthread_mutex_t	*death;
 }	t_args;
 
 typedef struct s_philo{
 	t_args			*args;
-	unsigned int	n;
+	int				id;
 	int				ate;
 	unsigned char	r_fork;
 	unsigned char	l_fork;
 	int				dead;
-	pthread_mutex_t	*death;
+	struct timeval	last_meal;
+	pthread_mutex_t	death;
 }	t_philo;
 
 #endif

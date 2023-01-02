@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/28 19:43:27 by lkrief           ###   ########.fr       */
+/*   Updated: 2022/12/31 02:22:57 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void	*philosophers(void *philo)
 
 	ph = (t_philo *)philo;
 	a = ph->args;
-	if (ph->n % 2)
-		usleep(a->die_tm * 0.25);
+	if (ph->id % 2)
+		ft_usleep(a->eat_timer * 0.7);
 	while (1)
 	{
-		if (ph->n % 2 && ph->ate)
-			usleep(a->die_tm * 0.25);
-		if (a->phi_nb == 1)
+		if (a->total % 2 && ph->ate)
+			ft_usleep(a->die_timer / 1000 * 0.25);
+		if (a->total == 1)
 			printlock(ph, "has taken a fork\n", 0);
 		while ((!ph->l_fork || !ph->r_fork) && !died(ph))
 			gets_forks(ph);
@@ -42,52 +42,55 @@ void	*philosophers(void *philo)
 void	*check_deaths(void *philos)
 {
 	int				i;
-	t_philo			*ph;
 	int				eat;
+	t_args			*a;
+	t_philo			*ph;
 
-	ph = (*(t_philo **)philos);
+	ph = ((t_philo *)philos);
+	a = ph[0].args;
 	while (1)
 	{
 		i = -1;
-		while (++i < ph[0].args->phi_nb)
+		while (++i < a->total)
 		{
-			if (born_to_kill(ph, i))
+			if (born_to_kill(&ph[i]))
 				return (NULL);
 		}
-		if (pthread_mutex_lock(&ph->args->keeper))
+		if (pthread_mutex_lock(&a->keeper))
 			ft_puterror(FAILED_MUTEX_LOCK);
-		eat = ph->args->plate;
-		if (pthread_mutex_unlock(&ph->args->keeper))
+		eat = a->done;
+		if (pthread_mutex_unlock(&a->keeper))
 			ft_puterror(FAILED_MUTEX_UNLOCK);
-		if (eat == ph->args->phi_nb)
+		if (eat == a->total)
 			return (NULL);
-		usleep(50);
+		usleep(100);
 	}
 	return (NULL);
 }
 
-int	born_to_kill(t_philo *ph, int i)
+int	born_to_kill(t_philo *ph)
 {
 	long			time;
+	t_args			*a;
 
-	if (pthread_mutex_lock(&ph->args->death[i].death))
+	a = ph->args;
+	if (pthread_mutex_lock(&ph->death))
 		ft_puterror(FAILED_MUTEX_LOCK);
-	time = ft_utdiff(get_time(),
-			convert_time(ph->args->death[i].last_meal));
-	if (pthread_mutex_unlock(&ph->args->death[i].death))
+	time = get_time_death() - convert_time_us(ph->last_meal);
+	if (pthread_mutex_unlock(&ph->death))
 		ft_puterror(FAILED_MUTEX_UNLOCK);
-	if (time > ph->args->die_tm || ph->args->exec)
+	if (time >= a->die_timer)
 	{
-		if (pthread_mutex_lock(&ph->args->keeper))
+		if (pthread_mutex_lock(&a->keeper))
 			ft_puterror(FAILED_MUTEX_LOCK);
-		ph->args->one_died = 1;
-		if (pthread_mutex_unlock(&ph->args->keeper))
+		a->died = 1;
+		if (pthread_mutex_unlock(&a->keeper))
 			ft_puterror(FAILED_MUTEX_UNLOCK);
-		if (pthread_mutex_lock(&ph->args->print))
+		if (pthread_mutex_lock(&a->print))
 			ft_puterror(FAILED_MUTEX_LOCK);
-		printf("[%ld] %d %s", get_time() - ph->args->start, ph->n + 1,
-			"died\n");
-		if (pthread_mutex_unlock(&ph->args->print))
+		printf("%06ld %d %s", get_time() - convert_time(a->init_time),
+			ph->id + 1, "died\n");
+		if (pthread_mutex_unlock(&a->print))
 			ft_puterror(FAILED_MUTEX_UNLOCK);
 		return (1);
 	}
@@ -111,7 +114,7 @@ int	main(int ac, char **av)
 	{
 		if (init_args_heap(&args) != 0)
 			return (-1);
-		philos = malloc(sizeof(*philos) * args.phi_nb);
+		philos = malloc(sizeof(*philos) * args.total);
 		if (philos == NULL)
 			free_args(&args, FAILED_MALLOC | FREE_ALL);
 		flag = exec_threads(&args, philos);
