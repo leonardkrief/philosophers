@@ -1,7 +1,8 @@
-SRCS			=	srcs/exec.c \
+SRCS			=	srcs/dinner.c \
 					srcs/free.c \
 					srcs/init.c \
 					srcs/main.c \
+					srcs/protected_sem.c \
 					srcs/utils_1.c \
 					srcs/utils_2.c
 

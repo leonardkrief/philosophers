@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/30 21:49:38 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/03 02:14:23 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,76 +14,80 @@
 
 int	ft_puterror(int flag)
 {
-	if ((flag & FAILURE & FAILED_CRT_THRD) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed creating thread\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_JOIN_THRD) && (flag & STDERR_FLAG))
+	if (flag & FAILURE & FAILED_FORK)
+		ft_putstr_fd("Failed fork\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_WAITPID)
+		ft_putstr_fd("Failed waitpid\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_SEM_OPEN)
+		ft_putstr_fd("Failed sem_open\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_SEM_CLOSE)
+		ft_putstr_fd("Failed sem_close\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_SEM_POST)
+		ft_putstr_fd("Failed sem_post\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_SEM_WAIT)
+		ft_putstr_fd("Failed sem_wait\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_SEM_UNLINK)
+		ft_putstr_fd("Failed sem_unlink\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_CREAT_TH)
+		ft_putstr_fd("Failed create thread\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_JOIN_TH)
 		ft_putstr_fd("Failed joining thread\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_DETACH_THRD) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed detaching thread\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_MALLOC) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed malloc\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_INIT_MUTEX) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed init mutex\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_DESTROY_MUTEX) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed destroy mutex\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_MUTEX_LOCK) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed lock mutex\n", STDERR_FILENO);
-	else if ((flag & FAILURE & FAILED_MUTEX_UNLOCK) && (flag & STDERR_FLAG))
-		ft_putstr_fd("Failed unlock mutex\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_KILL)
+		ft_putstr_fd("Failed kill\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_GET_TIME)
+		ft_putstr_fd("Failed get_time\n", STDERR_FILENO);
+	else if (flag & FAILURE & FAILED_USLEEP)
+		ft_putstr_fd("Failed usleep\n", STDERR_FILENO);
 	return (0);
 }
 
-int	setexec_puterror(t_args *args, int value, int flag)
+void	*free_infos(t_infos *infos, int flag)
 {
-	args->exec = value;
+	if (flag & CLOSE_SEM_FORKS)
+		protected_sem_close(infos->forks);
+	if (flag & CLOSE_SEM_PRINT)
+		protected_sem_close(infos->print);
+	if (flag & CLOSE_SEM_TIME)
+		protected_sem_close(infos->time);
+	if (flag & CLOSE_SEM_DIED)
+		protected_sem_close(infos->died);
+	if (flag & CLOSE_SEM_MEALS)
+		protected_sem_close(infos->meals);
 	ft_puterror(flag);
-	return (value);
+	if (flag & EXIT_FLAG)
+		exit(-(flag & FAILURE));
+	return (NULL);
 }
 
-void	destroy_mutex_tab(pthread_mutex_t *tab, int size)
+void	end_dinners_from_main(t_infos *infos, int flag)
 {
 	int	i;
 
-	i = -1;
-	while (++i < size)
+	if (flag & FAILURE)
 	{
-		if (pthread_mutex_destroy(&tab[i]))
-			ft_puterror(FAILED_DESTROY_MUTEX);
+		ft_putstr_fd("Philo ", 2);
+		ft_putnbr_fd(infos->id, 2);
+		ft_putstr_fd(" ERROR\t\t", 2);
+		ft_puterror(flag);
 	}
+	i = -1;
+	while (++i < infos->total)
+	{
+		if (kill(infos->pids[i], SIGTERM) == -1)
+			ft_puterror(FAILED_KILL);
+	}
+	free_infos(infos, flag & ~FAILURE);
+	exit (flag & FAILURE);
 }
 
-int	free_args(t_args *args, int flag)
+void	end_dinner_meals(t_infos *infos)
 {
-	if (flag & DESTROY_MUT_PRINT)
-		destroy_mutex_tab(&args->print, 1);
-	if (flag & DESTROY_MUT_KEEPER)
-		destroy_mutex_tab(&args->keeper, 1);
-	if (flag & DESTROY_MUT_FORKS)
-		destroy_mutex_tab(args->mut_fork, args->total);
-	if (flag & DESTROY_MUT_DEATH)
-		destroy_mutex_tab(args->death, args->total);
-	if (flag & FREE_THREADS)
-		free(args->thread);
-	if (flag & FREE_FORKS)
-		free(args->fork);
-	if (flag & FREE_MUTEX_FORKS)
-		free(args->mut_fork);
-	if (flag & FREE_DEATH)
-		free(args->death);
-	if (!ft_puterror(flag) && (flag & EXIT_FLAG))
-		exit(-(flag & FAILURE));
-	return (flag & EXIT_FLAG);
+	protected_sem_post(infos->meals, infos);
+	free_infos(infos, CLOSE_ALL | EXIT_FLAG);
 }
 
-int	handle_thread_error(t_args *args, t_philo *ph, int flag)
+void	end_dinner_death(t_infos *infos, int flag)
 {
-	t_args	*a;
-
-	a = args;
-	if (a != NULL)
-		a = NULL;
-	ft_putnbr_fd(ph->id, 2);
-	ft_putstr_fd("  ERROR  ", 2);
-	ft_puterror(flag);
-	return (1);
+	protected_sem_post(infos->died, infos);
+	free_infos(infos, flag | CLOSE_ALL | EXIT_FLAG);
 }

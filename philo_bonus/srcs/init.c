@@ -6,112 +6,126 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2022/12/31 02:16:55 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/03 02:44:58 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	init_args_stack(t_args *args, int ac, char **av)
+int	init_infos(t_infos *infos, int ac, char **av)
 {
-	memset(args, 0, sizeof(*args));
-	args->total = ft_atoi_ph(av[1]);
-	args->die_timer = ft_atoi_ph(av[2]) * 1000;
-	args->eat_timer = ft_atoi_ph(av[3]);
-	args->slp_timer = ft_atoi_ph(av[4]);
+	memset(infos, 0, sizeof(*infos));
+	infos->total = ft_atoi_ph(av[1]);
+	infos->die_timer = ft_atoi_ph(av[2]) * 1000;
+	infos->eat_timer = ft_atoi_ph(av[3]);
+	infos->slp_timer = ft_atoi_ph(av[4]);
 	if (ac == 6)
-		args->max_eat = ft_atoi_ph(av[5]);
-	if (args->total < 0 || args->max_eat < 0 || args->die_timer < 0
-		|| args->eat_timer < 0 || args->slp_timer < 0)
+		infos->max_eat = ft_atoi_ph(av[5]);
+	if (infos->total < 0 || infos->max_eat < 0 || infos->die_timer < 0
+		|| infos->eat_timer < 0 || infos->slp_timer < 0 || infos->total > 250)
 		return (1);
+	infos->print = protected_sem_open_new(SEM_PRINT, 1, infos, FAILED_SEM_OPEN);
+	infos->time = protected_sem_open_new(SEM_TIME, 1, infos, FAILED_SEM_OPEN
+			| CLOSE_SEM_PRINT);
+	infos->forks = protected_sem_open_new(SEM_FORKS, infos->total, infos,
+			FAILED_SEM_OPEN | CLOSE_SEM_PRINT | CLOSE_SEM_TIME);
+	// int value;
+	// sem_getvalue(infos->time, &value);
+	// printf ("TIME %d\n", value);
+	infos->died = protected_sem_open_new(SEM_DIED, 0, infos, FAILED_SEM_OPEN
+			| CLOSE_SEM_PRINT | CLOSE_SEM_TIME | CLOSE_SEM_FORKS);
+	infos->meals = protected_sem_open_new(SEM_MEALS, 0, infos, FAILED_SEM_OPEN
+			| CLOSE_SEM_PRINT | CLOSE_SEM_TIME | CLOSE_SEM_FORKS
+			| CLOSE_SEM_DIED);
 	return (0);
 }
 
-int	init_args_heap(t_args *args)
+void	*death_check(void *info)
 {
-	args->thread = malloc(sizeof(*args->thread) * (args->total + 1));
-	if (args->thread == NULL)
-		return (free_args(args, FAILED_MALLOC));
-	args->fork = malloc(sizeof(*args->fork) * args->total);
-	if (args->fork == NULL)
-		return (free_args(args, FAILED_MALLOC | FREE_THREADS));
-	memset(args->fork, 1, args->total);
-	args->mut_fork = malloc(sizeof(*args->mut_fork) * args->total);
-	if (args->mut_fork == NULL)
-		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS));
-	args->death = malloc(sizeof(*args->death) * args->total);
-	if (args->death == NULL)
-		return (free_args(args, FAILED_MALLOC | FREE_THREADS | FREE_FORKS
-				| FREE_MUTEX_FORKS));
-	if (pthread_mutex_init(&args->print, NULL))
-		return (free_args(args, FAILED_INIT_MUTEX | FREE_ALL));
-	if (pthread_mutex_init(&args->keeper, NULL))
-		return (free_args(args, FAILED_INIT_MUTEX | FREE_ALL
-				| DESTROY_MUT_PRINT));
-	return (init_args_heap_2(args));
+	long			time;
+	t_infos			*infos;
+
+	infos = ((t_infos *)info);
+	while (1)
+	{
+		protected_sem_wait(infos->time, infos);
+		time = get_time_us() - convert_time_us(infos->last_meal);
+		protected_sem_post(infos->time, infos);
+		if (time >= infos->die_timer)
+		{
+			protected_sem_wait(infos->print, infos);
+			printf("%06ld %d %s", get_time() - convert_time(
+					infos->init_time), infos->id + 1, "died\n");
+			end_dinner_death(infos, FAILED_CREAT_TH | CLOSE_ALL);
+		}
+		usleep(500);
+	}
+	return (NULL);
 }
 
-int	init_args_heap_2(t_args *args)
+void	*meals_check(void *info)
 {
-	int				i;
-	char			free;
+	int		i;
+	t_infos	*infos;
 
-	free = 0;
+	infos = ((t_infos *)info);
 	i = -1;
-	while (!free && ++i < args->total)
-	{
-		if (!free && pthread_mutex_init(&args->mut_fork[i], NULL))
-			free = 1;
-		while (free && --i)
-			pthread_mutex_destroy(&args->mut_fork[i]);
-	}
-	i = -1;
-	while (!free && ++i < args->total)
-	{
-		if (!free && pthread_mutex_init(&args->death[i], NULL))
-			free = 1;
-		while (free && --i)
-			pthread_mutex_destroy(&args->death[i]);
-	}
-	if (free)
-		return (free_args(args, FAILED_INIT_MUTEX | FREE_ALL
-				| DESTROY_MUT_PRINT | DESTROY_MUT_KEEPER));
-	return (0);
+	while (++i < infos->total)
+		protected_sem_wait(infos->meals, infos);
+	end_dinners_from_main(infos, CLOSE_ALL | EXIT_FLAG);
+	return (NULL);
 }
 
-int	init_philo(t_args *args, t_philo *philo, int i)
+void	launch_philo(t_infos *i)
 {
-	memset(philo, 0, sizeof(*philo));
-	philo->args = args;
-	philo->id = i;
-	philo->death = *(args->death);
-	philo->last_meal = args->init_time;
-	return (0);
+	pthread_t	death_thread;
+
+	if (pthread_create(&death_thread, NULL, &death_check, (void *)i))
+		end_dinner_death(i, FAILED_CREAT_TH | CLOSE_ALL);
+	i->forks = protected_sem_open(SEM_FORKS, i, FAILED_SEM_OPEN | CLOSE_ALL);
+	i->print = protected_sem_open(SEM_PRINT, i, FAILED_SEM_OPEN | CLOSE_ALL);
+	i->time = protected_sem_open(SEM_TIME, i, FAILED_SEM_OPEN | CLOSE_ALL);
+	i->meals = protected_sem_open(SEM_MEALS, i, FAILED_SEM_OPEN | CLOSE_ALL);
+	// 	int value;
+	// sem_getvalue(i->time, &value);
+	// printf ("(%d) TIME %d\n", i->id, value);
+	if (i->id % 2)
+		ft_usleep(i->eat_timer / 3);
+	while (1)
+	{
+		if (i->total % 2)
+			ft_usleep(i->eat_timer / 3);
+		gets_forks(i);
+		eats(i);
+		sleeps(i);
+		thinks(i);
+	}
+	if (pthread_join(death_thread, NULL))
+		end_dinner_death(i, FAILED_CREAT_TH | CLOSE_ALL);
+	free_infos(i, CLOSE_ALL | EXIT_FLAG);
 }
 
-int	exec_threads(t_args *args, t_philo *philos)
+void	*launch_dinners(t_infos *infos)
 {
-	int				error;
-	int				i;
+	int			i;
+	pthread_t	meals;
 
-	error = 0;
-	if (gettimeofday(&args->init_time, NULL))
-		return (free_args(args, FAILED_GET_TIME | FREE_ALL | DESTROY_ALL));
+	if (gettimeofday(&infos->init_time, NULL))
+		return (free_infos(infos, FAILED_GET_TIME | CLOSE_ALL));
 	i = -1;
-	while (!error && ++i < args->total)
+	while (++i < infos->total)
 	{
-		if (init_philo(args, &philos[i], i) || pthread_create(&args
-				->thread[i], NULL, &philosophers, &philos[i]))
-			error = setexec_puterror(args, i - 1, FAILED_CRT_THRD);
+		infos->id = i;
+		infos->last_meal = infos->init_time;
+		infos->pids[i] = fork();
+		if (infos->pids[i] == -1)
+			free_infos(infos, FAILED_FORK | CLOSE_ALL);
+		if (infos->pids[i] == 0)
+			launch_philo(infos); 
 	}
-	if (pthread_create(&args->thread[args->total],
-			NULL, &check_deaths, philos))
-		error = setexec_puterror(args, i, FAILED_CRT_THRD);
-	i = 0;
-	while (i < (args->total + 1) * (!error) + error * (error != 0))
-	{
-		if (pthread_join(args->thread[i++], NULL))
-			ft_puterror(FAILED_JOIN_THRD);
-	}
-	return (error);
+	if (pthread_create(&meals, NULL, &meals_check, (void *)infos))
+		end_dinners_from_main(infos, FAILED_CREAT_TH | CLOSE_ALL);
+	protected_sem_wait(infos->died, infos);
+	end_dinners_from_main(infos, CLOSE_ALL);
+	return (free_infos(infos, CLOSE_ALL));
 }

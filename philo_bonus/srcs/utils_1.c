@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/01 23:42:15 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/03 01:12:10 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ void	ft_putstr_fd(char *s, int fd)
 	{
 		i = -1;
 		while (s[++i])
-			write(fd, s + i, 1);
+		{
+			if (write(fd, s + i, 1) == -1)
+				printf("Error writing\n");
+		}
 	}
 }
 
@@ -38,7 +41,8 @@ void	ft_putnbr_fd(int nb, int fd)
 	if (z >= 10)
 		ft_putnbr_fd(z / 10, fd);
 	c = '0' + z % 10;
-	write(fd, &c, 1);
+	if (write(fd, &c, 1) == -1)
+		printf("Error writing\n");
 }
 
 int	ft_atoi_ph(const char *str)
@@ -48,6 +52,8 @@ int	ft_atoi_ph(const char *str)
 
 	nb = 0;
 	i = 0;
+	if (!str)
+		return (-1);
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
 		i++;
 	if (str[i] == '+')
@@ -61,20 +67,12 @@ int	ft_atoi_ph(const char *str)
 	return (nb);
 }
 
-int	printlock(t_philo *ph, char *str, int i)
+void	printlock(t_infos *infos, char *str)
 {
-	if (died(ph))
-		return (1);
-	if (pthread_mutex_lock(&ph->args->print))
-		handle_thread_error(ph->args, ph, FAILED_MUTEX_LOCK);
-	printf("%06ld %d %s", get_time() - convert_time(ph->args->init_time),
-		ph->id + 1, str);
-	if (i)
-		printf("%06ld %d %s", get_time() - convert_time(ph->args->init_time),
-			ph->id + 1, str);
-	if (pthread_mutex_unlock(&ph->args->print))
-		handle_thread_error(ph->args, ph, FAILED_MUTEX_UNLOCK);
-	return (0);
+	protected_sem_wait(infos->print, infos);
+	printf("%06ld %d %s", get_time() - convert_time(infos->init_time),
+		infos->id + 1, str);
+	protected_sem_post(infos->print, infos);
 }
 
 void	ft_usleep(long time_ms)

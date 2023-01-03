@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 13:19:25 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/02 02:10:16 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/02 16:09:23 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	*routine(void *args)
 
 int main(int ac, char **av, char **ev)
 {
-	in_addr_t		i = 0;
+	int		i = 0;
 	sem_t			*forks;
 	pid_t			pids[PROCESSES_NUMBER];
 	int				sem_value = 0;
