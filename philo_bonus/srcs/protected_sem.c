@@ -6,13 +6,14 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/03 02:37:03 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/03 02:49:31 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-sem_t	*protected_sem_open_new(const char *name, unsigned int value, t_infos *infos, int flag)
+sem_t	*protected_sem_open_new(const char *name, unsigned int value,
+			t_infos *infos, int flag)
 {
 	sem_t	*sem;
 

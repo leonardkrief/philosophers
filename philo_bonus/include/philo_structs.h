@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/03 01:58:36 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/03 03:41:55 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 # define FAILED_USLEEP			0b0000010100000000000
 # define FAILED_WRITE			0b0000011000000000000
 
-# define CLOSE_ALL				0b0111100000000000000
+# define CLOSE_ALL				0b1111100000000000000
 # define CLOSE_SEM_FORKS		0b0000100000000000000
 # define CLOSE_SEM_PRINT		0b0001000000000000000
 # define CLOSE_SEM_TIME			0b0010000000000000000
@@ -72,12 +72,15 @@ typedef struct s_infos{
 	struct timeval	init_time;
 	int				id;
 	int				ate;
+	int				should_return;
 	struct timeval	last_meal;
 	sem_t			*print;
 	sem_t			*died;
 	sem_t			*time;
 	sem_t			*meals;
 	sem_t			*forks;
+	pthread_t		death_thread;
+	pthread_t		meals_thread;
 	pid_t			pids[MAX_PHILOS];
 }	t_infos;
 

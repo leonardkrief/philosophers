@@ -9,7 +9,7 @@ SRCS			=	srcs/dinner.c \
 OBJS			=	${SRCS:.c=.o}
 
 CC				=	cc
-CFLAGS			=	-Wall -Wextra -Werror
+CFLAGS			=	-Wall -Wextra -Werror -g3
 INCLUDE			=	-Iinclude
 RM				=	rm -rf
 
