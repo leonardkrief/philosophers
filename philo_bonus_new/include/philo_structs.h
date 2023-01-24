@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/24 06:50:41 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/24 08:06:39 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,24 +70,27 @@
 // Forks are available if it is 1, unavailable if 0
 
 typedef struct s_infos{
-	int				total;
+	int				philo_number;
 	int				die_timer;
 	int				eat_timer;
 	int				slp_timer;
-	int				max_eat;
-	struct timeval	init_time;
-	int				id;
-	int				ate;
-	int				should_return;
-	struct timeval	last_meal;
-	sem_t			*print;
-	sem_t			*died;
-	sem_t			*time;
-	sem_t			*meals;
+	int				max_meals;
 	sem_t			*forks;
-	pthread_t		death_thread;
-	pthread_t		meals_thread;
+	sem_t			*death;
+	sem_t			*error;
+	sem_t			*print;
+	struct timeval	init_time;
 	pid_t			pids[MAX_PHILOS];
 }	t_infos;
+
+typedef struct s_philo{
+	int				id;
+	int				eaten_meals;
+	struct timeval	last_meal;
+	pthread_t		dinner_thread;
+	pthread_t		death_thread;
+	pthread_t		error_thread;
+	pthread_t		meals_thread;
+}	t_philo;
 
 #endif

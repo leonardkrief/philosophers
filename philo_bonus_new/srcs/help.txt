@@ -1,0 +1,47 @@
+
+MAIN PROCESS
+	launch all philos then waits for them to end by joining
+
+CHILD PROCESS
+	symbolizes a philo
+	runs 4 different threads:
+		- dinner exec
+		- check if all meals were ate by the philo
+			if yes, this thread frees the current process and ends it
+		- check for another philo's death
+			if yes, this thread frees the current process and ends it
+		- check if an error occured in another process
+			if yes, this thread frees the current process and ends it
+
+SEMAPHORES:
+	GLOBALS
+		/forks   at init: forks_nb    -1 when a forks taken    +1 when put back
+		/death   at init: 0           +1 when a philo dies
+		/error   at init: 0           +1 when an error occurs
+		/print   at init: 0           -1 when a philo prints   +1 when its done
+				                      -1 when a philo dies
+	LOCALS
+		/ph_time at init: 1           -1 when philo get_time,  +1 when its done
+
+STRUCTURES:
+	SAME FOR ALL:
+		int				philo_number;
+		int				die_timer;
+		int				eat_timer;
+		int				slp_timer;
+		int				max_meals;
+		sem_t			*forks;
+		sem_t			*death;
+		sem_t			*error;
+		sem_t			*print;
+		struct timeval	init_time;
+		pid_t			pids[MAX_PHILOS];
+
+	LOCALS:
+		int				id;
+		int				eaten_meals;
+		struct timeval	last_meal;
+		pthread_t		dinner_thread;
+		pthread_t		death_thread;
+		pthread_t		error_thread;
+		pthread_t		meals_thread;

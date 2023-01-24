@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/03 01:12:10 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/24 06:27:18 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,10 @@ int	ft_atoi_ph(const char *str)
 
 void	printlock(t_infos *infos, char *str)
 {
-	protected_sem_wait(infos->print, infos);
+	sem_wait_safe(infos->print, infos);
 	printf("%06ld %d %s", get_time() - convert_time(infos->init_time),
 		infos->id + 1, str);
-	protected_sem_post(infos->print, infos);
+	sem_post_safe(infos->print, infos);
 }
 
 void	ft_usleep(long time_ms)

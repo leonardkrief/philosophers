@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/24 13:19:25 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/02 16:09:23 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/24 05:58:27 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	print_post(sem_t *sem, int thread_id, pthread_mutex_t *mutex, int *sem_valu
 
 
 #define	PROCESSES_NUMBER 5
-#define	SEM_FORKS "/mysem"
+#define	MY_SEM "/mysem"
 
 typedef struct s_routine_args
 {
@@ -79,7 +79,7 @@ void	*routine(void *args)
 	sem_t			*sem;
 
 	a = ((t_routine_args *)args);
-	sem = sem_open(SEM_FORKS, 0);
+	sem = sem_open(MY_SEM, 0);
 	usleep(a->pid_id * 100);
 	// printf("(%d) Launch  rand = %3d\n", a->pid_id, a->random);
 	fflush(stdout);
@@ -103,8 +103,8 @@ int main(int ac, char **av, char **ev)
 	pthread_mutex_t mutex;
 	t_routine_args	args;
 
-	sem_unlink(SEM_FORKS);
-	forks = sem_open(SEM_FORKS, O_CREAT, 0644, sem_value);
+	sem_unlink(MY_SEM);
+	forks = sem_open(MY_SEM, O_CREAT, 0644, sem_value);
 	if (forks == SEM_FAILED)
 		print_exit("Error opening semaphore\n");
 	if (pthread_mutex_init(&mutex, NULL))

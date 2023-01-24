@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/03 03:55:53 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/24 06:27:18 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,15 @@ int	ft_puterror(int flag)
 void	*free_infos(t_infos *infos, int flag)
 {
 	if (flag & CLOSE_SEM_FORKS)
-		protected_sem_close(infos->forks);
+		sem_close_safe(infos->forks);
 	if (flag & CLOSE_SEM_PRINT)
-		protected_sem_close(infos->print);
+		sem_close_safe(infos->print);
 	if (flag & CLOSE_SEM_TIME)
-		protected_sem_close(infos->time);
+		sem_close_safe(infos->time);
 	if (flag & CLOSE_SEM_DIED)
-		protected_sem_close(infos->died);
+		sem_close_safe(infos->died);
 	if (flag & CLOSE_SEM_MEALS)
-		protected_sem_close(infos->meals);
+		sem_close_safe(infos->meals);
 	ft_puterror(flag);
 	if (flag & EXIT_FLAG)
 		exit(-(flag & FAILURE));
@@ -82,12 +82,12 @@ void	end_dinners_from_main(t_infos *infos, int flag)
 
 void	end_dinner_meals(t_infos *infos)
 {
-	protected_sem_post(infos->meals, infos);
+	sem_post_safe(infos->meals, infos);
 	free_infos(infos, CLOSE_ALL | EXIT_FLAG);
 }
 
 void	end_dinner_death(t_infos *infos, int flag)
 {
-	protected_sem_post(infos->died, infos);
+	sem_post_safe(infos->died, infos);
 	free_infos(infos, flag | CLOSE_ALL | EXIT_FLAG);
 }
