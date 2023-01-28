@@ -1,36 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   death.c                                            :+:      :+:    :+:   */
+/*   launcher.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 14:09:41 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/28 15:03:18 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*death_th(void *args)
+void	wait_dinners(t_infos *infos)
 {
-	t_dinner	*dinner;
-	long		time;
+	int	id;
 
-	dinner = (t_dinner *) args;
-	while (1)
+	id = 0;
+	while (++id <= infos->philo_nb)
 	{
-		// sem_wait_safe(infos->time, infos);
-		time = gettime_ms() - dinner->philo->last_meal;
-		// sem_post_safe(infos->time, infos);
-		if (time >= dinner->infos->die_timer)
-		{
-			sem_wait_safe(dinner->infos->print);
-			printf("%06ld %d %s", gettime_ms() - dinner->infos->init_time,
-				dinner->philo->id, "died\n");
-			break ;
-		}
-		usleep(500);
+		if (waitpid(infos->pids[id - 1], NULL, 0) == -1)
+			ft_puterror(FAILED_WAITPID, (char *)__func__);
 	}
-	return (NULL);
+}
+
+int	launcher(t_infos *infos)
+{
+	int	id;
+
+	id = 0;
+	while (++id <= infos->philo_nb)
+	{
+		infos->pids[id - 1] = fork();
+		if (infos->pids[id - 1] < 0)
+			return (ft_puterror(FAILED_FORK, (char *)__func__), id);
+		if (infos->pids[id - 1] == 0)
+			return (new_dinner(id, infos));
+	}
+	wait_dinners(infos);
+	return (0);
 }

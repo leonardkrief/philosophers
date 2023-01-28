@@ -1,10 +1,13 @@
-SRCS			=	srcs/dinner.c \
-					srcs/free.c \
-					srcs/init.c \
+SRCS			=	srcs/death.c \
+					srcs/dinner.c \
+					srcs/error.c \
+					srcs/launcher.c \
 					srcs/main.c \
-					srcs/protected_sem.c \
-					srcs/utils_1.c \
-					srcs/utils_2.c
+					srcs/semaphores_safe.c \
+					srcs/struct_infos.c \
+					srcs/struct_philo.c \
+					srcs/time.c \
+					srcs/utils.c
 
 OBJS			=	${SRCS:.c=.o}
 
