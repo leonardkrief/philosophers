@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 14:45:05 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 07:32:32 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ int	sem_close_safe(sem_t *sem)
 	if (sem_close(sem) == -1)
 	{
 		ft_puterror(FAILED_SEM_CLOSE, (char *)__func__);
-		return (0);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
 
 int	sem_wait_safe(sem_t *sem)
@@ -55,9 +55,9 @@ int	sem_wait_safe(sem_t *sem)
 	if (sem_wait(sem) == -1)
 	{
 		ft_puterror(FAILED_SEM_WAIT, (char *)__func__);
-		return (0);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
 
 int	sem_post_safe(sem_t *sem)
@@ -65,7 +65,7 @@ int	sem_post_safe(sem_t *sem)
 	if (sem_post(sem) == -1)
 	{
 		ft_puterror(FAILED_SEM_POST, (char *)__func__);
-		return (0);
+		return (1);
 	}
-	return (1);
+	return (0);
 }

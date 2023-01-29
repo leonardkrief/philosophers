@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 13:09:23 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 07:52:35 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,10 @@
 # define SEM_PRINT				"/print"
 # define SEM_DEATH				"/death"
 # define SEM_ERROR				"/error"
-# define SEM_TIME				"/time"
 # define SEM_STOP				"/stop"
-# define USERGUIDE_MSG			"usage:\n\t./philo {nb_philos} {die_tm} \
-								{eat_tm} {sleep_tm} (max_eat)\n \
-								\tinputs in ms is capped to 60,000 ms\n"
+# define SEM_TIME				"/time"
+# define SEM_LOCALSTOP			"/stop"
+# define USERGUIDE_MSG			"    usage:\n\t./philo {nb_philos} {die_tm} {eat_tm} {sleep_tm} [max_eat]\n \tnb_philos    < 500\n \ttimer inputs < 60,000 ms\n"
 
 # define EXIT_FLAG				0b10000000000000000000000000000000
 
@@ -85,6 +84,7 @@ typedef struct s_infos{
 	sem_t	*death;
 	sem_t	*error;
 	sem_t	*print;
+	sem_t	*stop;
 	long	init_time;
 	pid_t	pids[MAX_PHILOS];
 }	t_infos;
@@ -92,10 +92,14 @@ typedef struct s_infos{
 typedef struct s_philo{
 	int			id;
 	int			eaten_meals;
+	char		semtime_name[10];
 	sem_t		*time;
-	sem_t		*stop;
+	// char		semlstop_name[10];
+	// sem_t		*lstop;
 	long		last_meal;
+	int			end_death;
 	pthread_t	death_thread;
+	pthread_t	stop_thread;
 }	t_philo;
 
 typedef struct s_dinner{

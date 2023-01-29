@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 14:27:38 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 07:42:35 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 
 # include "philo_structs.h"
 
-// death.c
+// threads.c
 void	*death_th(void *args);
+void	*stop_th(void *args);
 
 // dinner.c
 void	gets_forks(t_dinner *dinner);
-int	eats(t_dinner *dinner);
+int		eats(t_dinner *dinner);
 void	sleeps(t_dinner *dinner);
 void	thinks(t_dinner *dinner);
 int	new_dinner(int id, t_infos *infos);
@@ -30,7 +31,7 @@ void	*ft_puterror(int flag, void *args);
 
 // launcher.c
 int	launcher(t_infos *infos);
-int	main(int ac, char **av);
+int	finish_dinner(t_infos *infos);
 
 // semaphores_safe.c
 sem_t	*sem_open_new_safe(const char *name, unsigned int value);

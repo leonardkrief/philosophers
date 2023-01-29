@@ -1,13 +1,13 @@
-SRCS			=	srcs/death.c \
-					srcs/dinner.c \
-					srcs/error.c \
-					srcs/launcher.c \
-					srcs/main.c \
-					srcs/semaphores_safe.c \
-					srcs/struct_infos.c \
-					srcs/struct_philo.c \
-					srcs/time.c \
-					srcs/utils.c
+SRCS			=	srcs/child_process/dinner.c \
+					srcs/child_process/struct_philo.c \
+					srcs/child_process/threads.c \
+					srcs/main_process/launcher.c \
+					srcs/main_process/main.c \
+					srcs/main_process/struct_infos.c \
+					srcs/utils/error.c \
+					srcs/utils/semaphores_safe.c \
+					srcs/utils/time.c \
+					srcs/utils/utils.c
 
 OBJS			=	${SRCS:.c=.o}
 

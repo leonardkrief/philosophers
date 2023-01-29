@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 15:03:18 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 07:34:15 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,22 @@ int	launcher(t_infos *infos)
 	}
 	wait_dinners(infos);
 	return (0);
+}
+
+int	finish_dinner(t_infos *infos)
+{
+	int	check;
+
+	check = 0;
+	if (sem_close_safe(infos->forks))
+		check = 1;
+	if (sem_close_safe(infos->death))
+		check = 1;
+	if (sem_close_safe(infos->error))
+		check = 1;
+	if (sem_close_safe(infos->print))
+		check = 1;
+	if (sem_close_safe(infos->stop))
+		check = 1;
+	return (check);
 }

@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 14:07:42 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 06:59:07 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	free_infos(t_infos *infos)
 		sem_close_safe(infos->death);
 	if (infos->error)
 		sem_close_safe(infos->error);
+	if (infos->stop)
+		sem_close_safe(infos->stop);
 }
 
 void	*check_infos(t_infos *i)
@@ -29,11 +31,11 @@ void	*check_infos(t_infos *i)
 	void	*check;
 
 	check = i;
-	if (i->philo_nb == -1 || i->die_timer == -1 || i->eat_timer == -1
-			|| i->slp_timer == -1 || i->max_meals == -1)
+	if (i->philo_nb == -1 || i->philo_nb > 500 || i->die_timer == -1
+		|| i->eat_timer == -1 || i->slp_timer == -1 || i->max_meals == -1)
 		check = ft_puterror(USERGUIDE, (char *)__func__);
 	if (i->forks == NULL || i->print == NULL || i->death == NULL
-			|| i->error == NULL || i->init_time == -1)
+			|| i->error == NULL || i->stop == NULL || i->init_time == -1)
 		check = NULL;
 	return (check);
 }
@@ -51,6 +53,7 @@ t_infos	*new_infos(t_infos *infos, int ac, char **av)
 	infos->print = sem_open_new_safe(SEM_PRINT, 1);
 	infos->death = sem_open_new_safe(SEM_DEATH, 0);
 	infos->error = sem_open_new_safe(SEM_ERROR, 0);
+	infos->stop = sem_open_new_safe(SEM_STOP, 0);
 	infos->init_time = gettime_ms();
 	if (!check_infos(infos))
 		return (free_infos(infos), NULL);
