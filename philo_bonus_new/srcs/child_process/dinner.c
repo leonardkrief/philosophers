@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:05:42 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 17:01:02 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,15 @@ int	new_philo(int id, t_infos *infos)
 	t_philo		philo;
 
 	dinner.infos = infos;
+	ft_usleep(1000);
+	long tt =  gettime_ms();
+	printf("diff = %ld, init = %ld, philo_launchtime = %ld\n", tt - dinner.infos->init_time, dinner.infos->init_time, tt);
+	exit (0);
 	dinner.philo = &philo;
 	if (!new_dinner(&dinner, id))
 		exit (1);
 	if (!(id % 2))
 		ft_usleep(3 * dinner.infos->eat_timer / 4);
-	printf("%06ld\n", gettime_ms() - infos->init_time);
 	while (1)
 	{
 		if (gets_forks(&dinner))

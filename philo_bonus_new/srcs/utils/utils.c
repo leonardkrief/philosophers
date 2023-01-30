@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 14:03:30 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:45:13 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,10 @@ void	printlock(t_dinner *dinner, char *str)
 void	ft_usleep(long time_ms)
 {
 	long	begin;
+	struct timeval tp;
 
+	memset(&tp, 0, sizeof (tp));
 	begin = gettime_ms();
 	while (gettime_ms() - begin < time_ms)
-		usleep(500);
+		usleep(1000);
 }

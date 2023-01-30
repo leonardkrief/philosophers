@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 15:56:18 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:38:50 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ typedef struct s_infos
 	sem_t			*print;
 	sem_t			*stop;
 	long			init_time;
+	struct timeval tp;
 	pid_t			pids[MAX_PHILOS];
 }					t_infos;
 

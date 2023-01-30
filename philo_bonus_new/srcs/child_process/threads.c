@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 15:27:24 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:48:28 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	*death_th(void *args)
 			sem_post_safe(dinner->infos->stop);
 			break ;
 		}
-		usleep(500);
+		ft_usleep(5);
 	}
 	printf("(%d)___END DEATH___\n", dinner->philo->id);
 	return (NULL);

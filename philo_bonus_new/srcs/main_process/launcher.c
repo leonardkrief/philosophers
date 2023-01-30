@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:04:25 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:48:46 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,14 @@ int	launcher(t_infos *infos)
 	id = 0;
 	while (++id <= infos->philo_nb)
 	{
+		// printf("(%d) %06ld\n", id, gettime_ms() - infos->init_time);
 		infos->pids[id - 1] = fork();
 		if (infos->pids[id - 1] < 0)
 			return (ft_puterror(FAILED_FORK, (char *)__func__), id);
 		if (infos->pids[id - 1] == 0)
 			return (new_philo(id, infos));
 	}
+	// printf("(%d) %06ld\n", -1, init - infos->init_time);
 	wait_dinners(infos);
 	return (0);
 }

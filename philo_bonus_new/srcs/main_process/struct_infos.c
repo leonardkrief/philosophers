@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:03:46 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:54:15 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ t_infos	*new_infos(t_infos *infos, int ac, char **av)
 	infos->error = sem_open_new_safe(SEM_ERROR, 0);
 	infos->stop = sem_open_new_safe(SEM_STOP, 0);
 	infos->init_time = gettime_ms();
+	printf("init time = %ld\n", infos->init_time);
 	if (!check_infos(infos))
 		return (free_infos(infos), NULL);
 	return (infos);
