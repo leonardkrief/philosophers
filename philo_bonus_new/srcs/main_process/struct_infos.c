@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 16:37:45 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:03:46 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	*check_infos(t_infos *i)
 	check = i;
 	if (i->philo_nb == -1 || i->philo_nb >= MAX_PHILOS || i->die_timer == -1
 		|| i->eat_timer == -1 || i->slp_timer == -1 || i->max_meals == -1)
-		check = ft_puterror(USERGUIDE, (char *)__func__);
+		check = ft_puterror(USERGUIDE, NULL);
 	if (i->forks == NULL || i->print == NULL || i->death == NULL
 			|| i->error == NULL || i->stop == NULL || i->init_time == -1)
 		check = NULL;
@@ -43,6 +43,8 @@ void	*check_infos(t_infos *i)
 
 t_infos	*new_infos(t_infos *infos, int ac, char **av)
 {
+	if (ac <= 4 || ac >= 7)
+		return (ft_puterror(USERGUIDE, NULL));
 	memset(infos, 0, sizeof(*infos));
 	infos->philo_nb = ft_atoi_philos(av[1]);
 	infos->die_timer = ft_atoi_philos(av[2]);

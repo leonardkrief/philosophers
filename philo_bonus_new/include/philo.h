@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 17:05:15 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 15:32:39 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int		gets_forks(t_dinner *dinner);
 int		eats(t_dinner *dinner);
 void	sleeps(t_dinner *dinner);
 void	thinks(t_dinner *dinner);
-int	new_dinner(int id, t_infos *infos);
+int	new_philo(int id, t_infos *infos);
 
 // error.c
 void *ft_puterror(failure_t failure_set, void *args);
@@ -45,10 +45,11 @@ void	free_infos(t_infos *infos);
 void	*check_infos(t_infos *i);
 t_infos	*new_infos(t_infos *infos, int ac, char **av);
 
-// struct_philo.c
-void	free_philo(t_philo *philo);
-void	*check_philo(t_philo *philo);
-t_philo	*new_philo(t_dinner *dinner, int id);
+// struct_dinner.c
+void	free_dinner(t_dinner *dinner);
+void	*check_dinner(t_dinner *dinner);
+void	get_semname(char *sem, char *name, int id);
+t_dinner	*new_dinner(t_dinner *dinner, int id);
 
 // time.c
 long	gettime_ms(void);

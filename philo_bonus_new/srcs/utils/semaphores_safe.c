@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 23:57:41 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:00:47 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int	sem_wait_safe(sem_t *sem)
 {
 	if (sem_wait(sem) == -1)
 	{
-		printf("AAAAAAAAAAAA");
 		ft_puterror(FAILED_SEM_WAIT, (char *)__func__);
 		return (1);
 	}

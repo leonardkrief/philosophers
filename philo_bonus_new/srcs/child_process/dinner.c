@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 17:10:18 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 16:05:42 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,18 @@ void	thinks(t_dinner *dinner)
 	printlock(dinner, "is thinking\n");
 }
 
-int	new_dinner(int id, t_infos *infos)
+int	new_philo(int id, t_infos *infos)
 {
 	t_dinner	dinner;
 	t_philo		philo;
 
 	dinner.infos = infos;
 	dinner.philo = &philo;
-	if (!new_philo(&dinner, id))
+	if (!new_dinner(&dinner, id))
 		exit (1);
-	if (id % 2)
+	if (!(id % 2))
 		ft_usleep(3 * dinner.infos->eat_timer / 4);
+	printf("%06ld\n", gettime_ms() - infos->init_time);
 	while (1)
 	{
 		if (gets_forks(&dinner))

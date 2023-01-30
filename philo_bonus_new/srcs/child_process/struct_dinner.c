@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   struct_philo.c                                     :+:      :+:    :+:   */
+/*   struct_dinner.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 16:56:47 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 17:05:01 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/30 15:33:23 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ void	free_dinner(t_dinner *dinner)
 
 }
 
-void	*check_philo(t_philo *philo)
+void	*check_dinner(t_dinner *dinner)
 {
 	void	*check;
 
-	check = philo;
-	if (!philo->time)
+	check = dinner;
+	if (!dinner->philo->time)
 		check = NULL;
-	if (!philo->lstop)
+	if (!dinner->philo->lstop)
 		check = NULL;
 	return (check);
 }
@@ -57,7 +57,7 @@ void	get_semname(char *sem, char *name, int id)
 	sem[i++] = '\0';
 }
 
-t_philo	*new_philo(t_dinner *dinner, int id)
+t_dinner	*new_dinner(t_dinner *dinner, int id)
 {
 	memset(dinner->philo, 0, sizeof(*dinner->philo));
 	dinner->philo->id = id;
@@ -67,7 +67,7 @@ t_philo	*new_philo(t_dinner *dinner, int id)
 	get_semname(dinner->philo->semlstop_name, SEM_LOCALSTOP, id);
 	dinner->philo->lstop = sem_open_new_safe(dinner->philo->semlstop_name, 1);
 	dinner->philo->last_meal = dinner->infos->init_time;
-	if (!check_philo(dinner->philo))
+	if (!check_dinner(dinner))
 		return (free_dinner(dinner), NULL);
 	if (pthread_create(&dinner->philo->death_thread, NULL, &death_th, (void *)dinner))
 		return (free_dinner(dinner),
@@ -78,5 +78,5 @@ t_philo	*new_philo(t_dinner *dinner, int id)
 	if (pthread_create(&dinner->philo->stop_thread, NULL, &stop_th, (void *)dinner))
 		return (free_dinner(dinner),
 			ft_puterror(FAILED_CREAT_TH, (char *)__func__));
-	return (dinner->philo);
+	return (dinner);
 }

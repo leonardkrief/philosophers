@@ -1,5 +1,5 @@
 SRCS			=	srcs/child_process/dinner.c \
-					srcs/child_process/struct_philo.c \
+					srcs/child_process/struct_dinner.c \
 					srcs/child_process/threads.c \
 					srcs/main_process/launcher.c \
 					srcs/main_process/main.c \
