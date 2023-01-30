@@ -6,18 +6,27 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 07:56:19 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 17:10:18 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	gets_forks(t_dinner *dinner)
+int	gets_forks(t_dinner *dinner)
 {
 	sem_wait_safe(dinner->infos->forks);
+	sem_wait_safe(dinner->philo->lstop);
+	if (dinner->philo->go_through)
+		return (1);
+	sem_post_safe(dinner->philo->lstop);
 	printlock(dinner, "has taken a fork\n");
 	sem_wait_safe(dinner->infos->forks);
+	sem_wait_safe(dinner->philo->lstop);
+	if (dinner->philo->go_through)
+		return (1);
+	sem_post_safe(dinner->philo->lstop);
 	printlock(dinner, "has taken a fork\n");
+	return (0);
 }
 
 int	eats(t_dinner *dinner)
@@ -62,15 +71,10 @@ int	new_dinner(int id, t_infos *infos)
 		ft_usleep(3 * dinner.infos->eat_timer / 4);
 	while (1)
 	{
-		// if (dinner.infos->philo_nb % 2)
-		// 	// ft_usleep(dinner.infos->eat_timer / 3);
-		gets_forks(&dinner);
-		if (eats(&dinner))
-		{
-			dinner.philo->end_death = 1;
-			// sem_wait_safe(dinner.philo->time);
+		if (gets_forks(&dinner))
 			break ;
-		}
+		if (eats(&dinner))
+			break ;
 		sleeps(&dinner);
 		thinks(&dinner);
 		usleep(100);

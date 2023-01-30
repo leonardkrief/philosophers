@@ -6,56 +6,37 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 14:50:09 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/28 15:02:45 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 16:45:26 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_putstr_error(char *s)
+int	ft_putstr_error(const char *s)
 {
-	return (ft_putstr_fd(s, STDERR_FILENO));
+	return (fprintf(stderr, "%s", s));
 }
 
-void	*ft_puterror_2(int flag, void *args)
+const char* get_failure_string(failure_t failure)
 {
-	if (flag & FAILED_USLEEP)
-		ft_putstr_error("Failed usleep: ");
-	else if (flag & FAILED_WRITE)
-		ft_putstr_error("Failed write: ");
-	if (flag & FAILURE)
-	{
-		ft_putstr_error((char *)args);
-		ft_putstr_error("\n");
-	}
-	if (flag & USERGUIDE)
-		ft_putstr_error(USERGUIDE_MSG);
-	return (NULL);
+    return failure_strings[failure];
 }
 
-void	*ft_puterror(int flag, void *args)
+void *ft_puterror(failure_t failure_set, void *args)
 {
-	if (flag & FAILED_FORK)
-		ft_putstr_error("Failed fork: ");
-	else if (flag & FAILED_WAITPID)
-		ft_putstr_error("Failed waitpid: ");
-	else if (flag & FAILED_SEM_OPEN)
-		ft_putstr_error("Failed sem_open: ");
-	else if (flag & FAILED_SEM_CLOSE)
-		ft_putstr_error("Failed sem_close: ");
-	else if (flag & FAILED_SEM_POST)
-		ft_putstr_error("Failed sem_post: ");
-	else if (flag & FAILED_SEM_WAIT)
-		ft_putstr_error("Failed sem_wait: ");
-	else if (flag & FAILED_SEM_UNLINK)
-		ft_putstr_error("Failed sem_unlink: ");
-	else if (flag & FAILED_CREAT_TH)
-		ft_putstr_error("Failed create thread: ");
-	else if (flag & FAILED_JOIN_TH)
-		ft_putstr_error("Failed joining thread: ");
-	else if (flag & FAILED_KILL)
-		ft_putstr_error("Failed kill: ");
-	else if (flag & FAILED_GET_TIME)
-		ft_putstr_error("Failed get_time: ");
-	return (ft_puterror_2(flag, args));
+    if (failure_set == NO_FAILURE) //no failure set, nothing to do ...
+        return NULL;               //unless no failure should be reported too
+
+    //for each failure that is set in failure_set
+    for (failure_t n=1; n <= LAST_FAILURE; ++n, failure_set >>= 1) {
+        if (failure_set & 1) { //failure n is set, report it
+            ft_putstr_error(get_failure_string(n));
+            ft_putstr_error((char *)args);
+            ft_putstr_error("\n");
+        }
+    }
+
+    //...
+
+    return NULL;
 }

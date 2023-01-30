@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 07:52:35 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 23:59:58 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,37 +42,52 @@
 # define SEM_ERROR				"/error"
 # define SEM_STOP				"/stop"
 # define SEM_TIME				"/time"
-# define SEM_LOCALSTOP			"/stop"
+# define SEM_LOCALSTOP			"/lstop"
 # define USERGUIDE_MSG			"    usage:\n\t./philo {nb_philos} {die_tm} {eat_tm} {sleep_tm} [max_eat]\n \tnb_philos    < 500\n \ttimer inputs < 60,000 ms\n"
 
-# define EXIT_FLAG				0b10000000000000000000000000000000
+typedef uint64_t failure_t;
 
-# define FAILURE				0b00000000000000000001111111111111
-# define FAILED_FORK			0b00000000000000000000000000000001
-# define FAILED_WAITPID			0b00000000000000000000000000000010
-# define FAILED_SEM_OPEN		0b00000000000000000000000000000100
-# define FAILED_SEM_CLOSE		0b00000000000000000000000000001000
-# define FAILED_SEM_POST		0b00000000000000000000000000010000
-# define FAILED_SEM_WAIT		0b00000000000000000000000000100000
-# define FAILED_SEM_UNLINK		0b00000000000000000000000001000000
-# define FAILED_CREAT_TH		0b00000000000000000000000010000000
-# define FAILED_JOIN_TH			0b00000000000000000000000100000000
-# define FAILED_KILL			0b00000000000000000000001000000000
-# define FAILED_GET_TIME		0b00000000000000000000010000000000
-# define FAILED_USLEEP			0b00000000000000000000100000000000
-# define FAILED_WRITE			0b00000000000000000001000000000000
+#define FAILURE_MASK(FCODE) (UINT64_C(1) << (FCODE))
 
-# define USERGUIDE				0b00000000000000000010000000000000
+#define NO_FAILURE          UINT64_C(0)
+#define FAILED_FORK         UINT64_C(1)
+#define FAILED_WAITPID      UINT64_C(2)
+#define FAILED_SEM_OPEN     UINT64_C(3)
+#define FAILED_SEM_CLOSE    UINT64_C(4)
+#define FAILED_SEM_POST     UINT64_C(5)
+#define FAILED_SEM_WAIT     UINT64_C(6)
+#define FAILED_SEM_UNLINK   UINT64_C(7)
+#define FAILED_CREAT_TH     UINT64_C(8)
+#define FAILED_JOIN_TH      UINT64_C(9)
+#define FAILED_DETAC_TH     UINT64_C(10)
+#define FAILED_KILL         UINT64_C(11)
+#define FAILED_GET_TIME     UINT64_C(12)
+#define FAILED_USLEEP       UINT64_C(13)
+#define FAILED_WRITE        UINT64_C(14)
+#define LAST_FAILURE        FAILED_WRITE
+#define USERGUIDE           UINT64_C(15)
 
-# define CLOSE_ALL_SEMS			0b00000000001111100000000000000000
-# define CLOSE_SEM_FORKS		0b00000000000000100000000000000000
-# define CLOSE_SEM_PRINT		0b00000000000001000000000000000000
-# define CLOSE_SEM_TIME			0b00000000000010000000000000000000
-# define CLOSE_SEM_DIED			0b00000000000100000000000000000000
-# define CLOSE_SEM_MEALS		0b00000000001000000000000000000000
+static const char *failure_strings[] = {
+	"No failure",
+	"Failed fork: ",
+	"Failed waitpid: ",
+	"Failed sem_open: ",
+	"Failed sem_close: ",
+	"Failed sem_post: ",
+	"Failed sem_wait: ",
+	"Failed sem_unlink: ",
+	"Failed create thread: ",
+	"Failed joining thread: ",
+	"Failed detach thread: ",
+	"Failed kill: ",
+	"Failed get_time: ",
+	"Failed usleep: ",
+	"Failed write: ",
+	"    usage:\n\t./philo {nb_philos} {die_tm} {eat_tm} {sleep_tm} [max_eat]\n \tnb_philos    < 500\n \ttimer inputs < 60,000 ms\n"
+};
 
-// Philo n°i needs forks n°i and n°i+1 to eat
-// Forks are available if it is 1, unavailable if 0
+#define is_failure_set(FSET, FCODE) FSET & FAILURE_MASK(FCODE)
+#define set_failure(FSET, FCODE) FSET |= FAILURE_MASK(FCODE)
 
 typedef struct s_infos{
 	int		philo_nb;
@@ -94,10 +109,10 @@ typedef struct s_philo{
 	int			eaten_meals;
 	char		semtime_name[10];
 	sem_t		*time;
-	// char		semlstop_name[10];
-	// sem_t		*lstop;
+	char		semlstop_name[10];
+	sem_t		*lstop;
+	int			go_through;
 	long		last_meal;
-	int			end_death;
 	pthread_t	death_thread;
 	pthread_t	stop_thread;
 }	t_philo;

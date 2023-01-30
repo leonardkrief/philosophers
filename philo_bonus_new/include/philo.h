@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/29 07:42:35 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/29 17:05:15 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ void	*death_th(void *args);
 void	*stop_th(void *args);
 
 // dinner.c
-void	gets_forks(t_dinner *dinner);
+int		gets_forks(t_dinner *dinner);
 int		eats(t_dinner *dinner);
 void	sleeps(t_dinner *dinner);
 void	thinks(t_dinner *dinner);
 int	new_dinner(int id, t_infos *infos);
 
 // error.c
-void	*ft_puterror(int flag, void *args);
+void *ft_puterror(failure_t failure_set, void *args);
 
 // launcher.c
 int	launcher(t_infos *infos);
