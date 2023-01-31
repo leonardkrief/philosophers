@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:48:46 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/31 04:47:38 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ void	wait_dinners(t_infos *infos)
 	int	id;
 
 	id = 0;
+	sem_wait_safe(infos->kill);
 	while (++id <= infos->philo_nb)
 	{
+		kill(infos->pids[id - 1], SIGTERM);
 		if (waitpid(infos->pids[id - 1], NULL, 0) == -1)
 			ft_puterror(FAILED_WAITPID, (char *)__func__);
 	}
@@ -52,7 +54,7 @@ int	finish_dinner(t_infos *infos)
 		check = 1;
 	if (sem_close_safe(infos->death))
 		check = 1;
-	if (sem_close_safe(infos->error))
+	if (sem_close_safe(infos->kill))
 		check = 1;
 	if (sem_close_safe(infos->print))
 		check = 1;

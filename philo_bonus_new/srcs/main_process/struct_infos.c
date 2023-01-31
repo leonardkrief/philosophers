@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:54:15 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/31 04:41:19 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	free_infos(t_infos *infos)
 		sem_close_safe(infos->print);
 	if (infos->death)
 		sem_close_safe(infos->death);
-	if (infos->error)
-		sem_close_safe(infos->error);
+	if (infos->kill)
+		sem_close_safe(infos->kill);
 	if (infos->stop)
 		sem_close_safe(infos->stop);
 	exit (1);
@@ -36,7 +36,7 @@ void	*check_infos(t_infos *i)
 		|| i->eat_timer == -1 || i->slp_timer == -1 || i->max_meals == -1)
 		check = ft_puterror(USERGUIDE, NULL);
 	if (i->forks == NULL || i->print == NULL || i->death == NULL
-			|| i->error == NULL || i->stop == NULL || i->init_time == -1)
+			|| i->kill == NULL || i->stop == NULL || i->init_time == -1)
 		check = NULL;
 	return (check);
 }
@@ -55,10 +55,9 @@ t_infos	*new_infos(t_infos *infos, int ac, char **av)
 	infos->forks = sem_open_new_safe(SEM_FORKS, infos->philo_nb);
 	infos->print = sem_open_new_safe(SEM_PRINT, 1);
 	infos->death = sem_open_new_safe(SEM_DEATH, 0);
-	infos->error = sem_open_new_safe(SEM_ERROR, 0);
+	infos->kill = sem_open_new_safe(SEM_ERROR, 0);
 	infos->stop = sem_open_new_safe(SEM_STOP, 0);
 	infos->init_time = gettime_ms();
-	printf("init time = %ld\n", infos->init_time);
 	if (!check_infos(infos))
 		return (free_infos(infos), NULL);
 	return (infos);

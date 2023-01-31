@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:32:36 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:38:50 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/31 04:37:46 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ typedef struct s_infos
 	int				max_meals;
 	sem_t			*forks;
 	sem_t			*death;
-	sem_t			*error;
+	sem_t			*kill;
 	sem_t			*print;
 	sem_t			*stop;
 	long			init_time;
@@ -111,8 +111,6 @@ typedef struct s_philo
 	int				eaten_meals;
 	char			semtime_name[10];
 	sem_t			*time;
-	char			semlstop_name[10];
-	sem_t			*lstop;
 	int				go_through;
 	long			last_meal;
 	pthread_t		death_thread;

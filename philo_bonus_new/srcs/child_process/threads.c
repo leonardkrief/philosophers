@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 16:48:28 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/31 04:38:21 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	*death_th(void *args)
 		}
 		ft_usleep(5);
 	}
+	sem_post_safe(dinner->infos->kill);
 	printf("(%d)___END DEATH___\n", dinner->philo->id);
 	return (NULL);
 }
@@ -45,16 +46,12 @@ void	*stop_th(void *args)
 	sem_wait_safe(dinner->infos->stop);
 	sem_post_safe(dinner->infos->stop);
 	ft_usleep(100);
-	sem_wait_safe(dinner->philo->lstop);
-	dinner->philo->go_through = 1;
-	sem_post_safe(dinner->philo->lstop);
-	sem_post_safe(dinner->infos->forks);
 	sem_close_safe(dinner->philo->time);
 	sem_close_safe(dinner->infos->death);
-	sem_close_safe(dinner->infos->error);
+	sem_close_safe(dinner->infos->kill);
 	sem_close_safe(dinner->infos->print);
 	sem_close_safe(dinner->infos->stop);
-	sem_close_safe(dinner->philo->lstop);
 	sem_close_safe(dinner->infos->forks);
+	printf("(%d)___END STOP___\n", dinner->philo->id);
 	exit (0);
 }

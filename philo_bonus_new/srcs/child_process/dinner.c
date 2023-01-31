@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 07:18:16 by lkrief            #+#    #+#             */
-/*   Updated: 2023/01/30 17:01:02 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/01/31 04:55:08 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,8 @@
 int	gets_forks(t_dinner *dinner)
 {
 	sem_wait_safe(dinner->infos->forks);
-	sem_wait_safe(dinner->philo->lstop);
-	if (dinner->philo->go_through)
-		return (1);
-	sem_post_safe(dinner->philo->lstop);
 	printlock(dinner, "has taken a fork\n");
 	sem_wait_safe(dinner->infos->forks);
-	sem_wait_safe(dinner->philo->lstop);
-	if (dinner->philo->go_through)
-		return (1);
-	sem_post_safe(dinner->philo->lstop);
 	printlock(dinner, "has taken a fork\n");
 	return (0);
 }
@@ -64,13 +56,19 @@ int	new_philo(int id, t_infos *infos)
 	t_philo		philo;
 
 	dinner.infos = infos;
-	ft_usleep(1000);
-	long tt =  gettime_ms();
-	printf("diff = %ld, init = %ld, philo_launchtime = %ld\n", tt - dinner.infos->init_time, dinner.infos->init_time, tt);
-	exit (0);
 	dinner.philo = &philo;
 	if (!new_dinner(&dinner, id))
 		exit (1);
+	if (dinner.philo->id == dinner.infos->philo_nb)
+	{
+		int	i = 0;
+		while (i++ < dinner.infos->philo_nb)
+			sem_post_safe(dinner.infos->print);
+	}
+	sem_wait_safe(dinner.infos->print);
+	long tt =  gettime_ms();
+	printf("(%d) diff = %ld\n", dinner.philo->id, tt - dinner.infos->init_time);
+	exit (0);
 	if (!(id % 2))
 		ft_usleep(3 * dinner.infos->eat_timer / 4);
 	while (1)
@@ -83,7 +81,5 @@ int	new_philo(int id, t_infos *infos)
 		thinks(&dinner);
 		usleep(100);
 	}
-	if (pthread_join(dinner.philo->stop_thread, NULL) == -1)
-		ft_puterror(FAILED_WAITPID, (char *)__func__);
 	return (0);
 }
