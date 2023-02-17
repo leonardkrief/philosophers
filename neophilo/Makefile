@@ -4,6 +4,14 @@ DIR_SRCS		=	srcs
 DIR_OBJS		=	objs
 
 SRCS_NAMES		=	error.c \
+					launcher.c \
+					main.c \
+					meal.c \
+					mutex_safe.c \
+					pthread_safe.c \
+					shared_data.c \
+					time.c \
+					utils.c
 
 SRCS			=	${addprefix ${DIR_SRCS}/,${SRCS_NAMES}}
 OBJS			=	${addprefix ${DIR_OBJS}/,${OBJS_NAMES}}
@@ -37,7 +45,11 @@ fclean:				clean
 
 re:					fclean all
 
+d:					CFLAGS += -g3
+d:					all
+red:				fclean d
+
 -include			${DEPS}
 
 .PHONY:				all clean fclean re
-.SILENT:
+# .SILENT:
