@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 15:01:30 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/17 17:03:13 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	printlock(t_philo *ph, t_message message)
 	if (someone_died(ph))
 		return (-1);
 	pthread_mutex_lock_safe(&ph->shared.print);
-	printf("%06f %d %s", gettime_ms() - ph->shared.start_time,
+	printf("%06.f %d %s", gettime_ms() - ph->shared.start_time,
 		ph->id, message_strings[message]);
 	pthread_mutex_unlock_safe(&ph->shared.print);
 	return (0);

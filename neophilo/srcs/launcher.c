@@ -6,13 +6,13 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/17 01:38:58 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 15:15:59 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/17 18:12:38 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	launcher(t_shared_data *shared, t_philo *philos)
+int	launcher(t_shared_data *shared, t_philo philos[])
 {
 	int	i;
 	int	j;
@@ -32,7 +32,7 @@ int	launcher(t_shared_data *shared, t_philo *philos)
 	}
 	j = -1;
 	while (++j < i)
-		pthread_join_safe((philos + i)->thread);
+		pthread_join_safe(philos[j].thread);
 	return ((i == shared->total_philos) - 1);
 }
 

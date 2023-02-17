@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 17:26:44 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 15:14:37 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/17 17:28:41 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	init_shared_data(t_shared_data *sh, int ac, char **av)
 		return (-1);
 	init_shared_data_mutexes(sh);
 	init_shared_data_forks_mutexes(sh);
-	free_shared_data(sh);
 	return (0);
 }
 
