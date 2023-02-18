@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 04:41:31 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 17:03:13 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 04:52:33 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,31 +51,42 @@ int	ft_atoi_ph(const char *str)
 
 int	someone_died(t_philo *ph)
 {
-	pthread_mutex_lock_safe(&ph->shared.death);
-	if (ph->shared.death_bool)
+	pthread_mutex_lock_safe(&ph->shared->death, ph->shared);
+	if (ph->shared->death_bool)
 	{
-		pthread_mutex_unlock_safe(&ph->shared.death);
+		pthread_mutex_unlock_safe(&ph->shared->death, ph->shared);
 		return (-1);
 	}
-	pthread_mutex_unlock_safe(&ph->shared.death);
+	pthread_mutex_unlock_safe(&ph->shared->death, ph->shared);
+	return (0);
+}
+
+int	error_occured(t_philo *ph)
+{
+	pthread_mutex_lock_safe(&ph->shared->error, ph->shared);
+	if (ph->shared->error_bool == true)
+	{
+		pthread_mutex_unlock_safe(&ph->shared->error, ph->shared);
+		return (-1);
+	}
+	pthread_mutex_unlock_safe(&ph->shared->error, ph->shared);
 	return (0);
 }
 
 int	printlock(t_philo *ph, t_message message)
 {
 	static const char	*message_strings[LAST_MESSAGE] = {
-	"has taken a fork\n",
-	"is eating\n",
-	"is sleeping\n",
-	"is thinking\n",
-	"died\n",
-	};
+		"has taken a fork\n",
+		"is eating\n",
+		"is sleeping\n",
+		"is thinking\n",
+		"died\n",};
 
 	if (someone_died(ph))
 		return (-1);
-	pthread_mutex_lock_safe(&ph->shared.print);
-	printf("%06.f %d %s", gettime_ms() - ph->shared.start_time,
+	pthread_mutex_lock_safe(&ph->shared->print, ph->shared);
+	printf("%06.f %3d %s", gettime_ms() - ph->shared->start_time,
 		ph->id, message_strings[message]);
-	pthread_mutex_unlock_safe(&ph->shared.print);
+	pthread_mutex_unlock_safe(&ph->shared->print, ph->shared);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 17:26:44 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 17:28:41 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 04:14:44 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,6 @@ int	free_shared_data(t_shared_data *sh)
 	pthread_mutex_destroy_safe(&sh->keeper);
 	pthread_mutex_destroy_safe(&sh->death);
 	pthread_mutex_destroy_safe(&sh->error);
+	free(sh);
 	return (0);
 }

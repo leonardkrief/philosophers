@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 22:56:06 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 12:35:49 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 04:17:20 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@ int	ft_putstr_error(const char *s)
 const char	*get_failure_string(const t_failure failure)
 {
 	static const char	*failure_strings[12] = {
-	"No failure",
-	"Failed malloc",
-	"Failed write",
-	"Failed usleep",
-	"Failed gettimeofday",
-	"Failed pthread_create",
-	"Failed pthread_detach",
-	"Failed pthread_join",
-	"Failed pthread_mutex_init",
-	"Failed pthread_mutex_destroy",
-	"Failed pthread_mutex_lock",
-	"Failed pthread_mutex_unlock",};
+		"No failure",
+		"Failed malloc",
+		"Failed write",
+		"Failed usleep",
+		"Failed gettimeofday",
+		"Failed pthread_create",
+		"Failed pthread_detach",
+		"Failed pthread_join",
+		"Failed pthread_mutex_init",
+		"Failed pthread_mutex_destroy",
+		"Failed pthread_mutex_lock",
+		"Failed pthread_mutex_unlock",};
 
 	return (failure_strings[failure]);
 }

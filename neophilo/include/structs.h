@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 17:14:41 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 15:11:30 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 03:39:57 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef enum e_message{
 	EAT_MESSAGE,
 	SLEEP_MESSAGE,
 	THINK_MESSAGE,
-	DEATH_MESSAGE,
+	DEAD_MESSAGE,
 	LAST_MESSAGE
 }	t_message;
 
@@ -52,15 +52,17 @@ typedef enum e_failure{
 # define LAST_FAILURE FAILED_MUTEX_UNLOCK
 
 typedef struct s_shared_data{
-	int		total_philos;
-	int		die_timer;
-	int		eat_timer;
-	int		slp_timer;
-	int		max_meals;
-	double	start_time;			//temps a l'init
-	bool	forks[MAX_PHILOS];	//tableau de fourchettes: 0 si la fourchette est libre, 1 sinon
-	bool	death_bool;			//Booleen qui vaut 0 si aucun philo n'est mort, 1 sinon
-	bool	error_bool;
+	int				total_philos;
+	int				die_timer;
+	int				eat_timer;
+	int				slp_timer;
+	int				max_meals;
+	int				done_meals;
+	double			start_time;			//temps a l'init
+	bool			forks[MAX_PHILOS];	//tableau de fourchettes: 0 si la fourchette est libre, 1 sinon
+	bool			death_bool;			//Booleen qui vaut 0 si aucun philo n'est mort, 1 sinon
+	bool			error_bool;
+	pthread_t		threads[MAX_PHILOS + 1];
 	pthread_mutex_t	mutex_forks[MAX_PHILOS];	//tableau de mutex pour proteger les forks
 	pthread_mutex_t	print;		//mutex sur le print pour eviter que 2 philos print en meme temps
 	pthread_mutex_t	keeper;		
@@ -69,14 +71,13 @@ typedef struct s_shared_data{
 }	t_shared_data;
 
 typedef struct s_philo{
-	t_shared_data	shared;
+	t_shared_data	*shared;
 	int				id;
 	int				meals;
 	bool			r_fork;		//0 if he dont hold the fork, 1 if he does
 	bool			l_fork;		//0 if he dont hold the fork, 1 if he does
 	bool			dead;		//0 if he's alive, 1 if he's dead
 	double			last_meal;
-	pthread_t		thread;
 }	t_philo;
 
 #endif

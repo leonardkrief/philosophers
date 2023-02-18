@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 17:22:39 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/17 12:55:42 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 04:14:22 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,19 @@
 
 int	main(int ac, char **av)
 {
-	t_shared_data	shared_data;
+	t_shared_data	*shared_data;
 	t_philo			philos[MAX_PHILOS];
 
-	if (init_shared_data(&shared_data, ac, av) == -1)
+	shared_data = malloc(sizeof(*shared_data));
+	if (!shared_data)
+		return (-1);
+	if (init_shared_data(shared_data, ac, av) == -1)
 	{
 		printf(USERGUIDE);
+		free(shared_data);
 		return (-1);
 	}
-	launcher(&shared_data, philos);
+	launcher(shared_data, philos);
+	free_shared_data(shared_data);
 	return (0);
 }

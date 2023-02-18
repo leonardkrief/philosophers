@@ -9,6 +9,7 @@ SRCS_NAMES		=	error.c \
 					meal.c \
 					mutex_safe.c \
 					pthread_safe.c \
+					routines.c \
 					shared_data.c \
 					time.c \
 					utils.c
