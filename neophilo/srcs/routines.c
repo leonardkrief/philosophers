@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 04:20:06 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/18 04:39:39 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 19:01:34 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	*meal_routine(void *philo)
 {
-	t_philo		*ph;
+	t_philo	*ph;
 
-	ph = (t_philo *) philo;
+	ph = (t_philo *)philo;
 	if (ph->id % 2 == 0)
 		ft_ms_sleep(ph->shared->eat_timer * 0.7);
 	while (1)
@@ -41,7 +41,7 @@ void	*death_routine(void *philos)
 	int		i;
 	t_philo	*philo;
 
-	philo = (t_philo *) philos;
+	philo = (t_philo *)philos;
 	while (1)
 	{
 		i = -1;
@@ -52,12 +52,12 @@ void	*death_routine(void *philos)
 				return (pthread_mutex_unlock_safe(&philo->shared->death,
 						philo->shared), NULL);
 			if (gettime_ms() - philo[i].last_meal >= philo->shared->die_timer)
-			{
-				pthread_mutex_unlock_safe(&philo->shared->death, philo->shared);
-				printlock(&philo[i], DEAD_MESSAGE);
-				philo->shared->death_bool = true;
-				return (NULL);
-			}
+				return (pthread_mutex_unlock_safe(&philo->shared->death,
+						philo->shared), printlock(&philo[i], DEAD_MESSAGE),
+					pthread_mutex_lock_safe(&philo->shared->death,
+						philo->shared), philo->shared->death_bool = true,
+					pthread_mutex_unlock_safe(&philo->shared->death,
+						philo->shared), NULL);
 		}
 		pthread_mutex_unlock_safe(&philo->shared->death, philo->shared);
 		usleep(500);

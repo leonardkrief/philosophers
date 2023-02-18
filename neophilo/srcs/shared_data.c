@@ -6,7 +6,7 @@
 /*   By: lkrief <lkrief@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 17:26:44 by lkrief            #+#    #+#             */
-/*   Updated: 2023/02/18 04:14:44 by lkrief           ###   ########.fr       */
+/*   Updated: 2023/02/18 16:49:02 by lkrief           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,13 @@ int	init_shared_data(t_shared_data *sh, int ac, char **av)
 	sh->eat_timer = ft_atoi_ph(av[3]);
 	sh->slp_timer = ft_atoi_ph(av[4]);
 	if (ac == 6)
+	{
 		sh->max_meals = ft_atoi_ph(av[5]);
-	if (sh->total_philos == -1 || sh->total_philos > MAX_PHILOS
-		|| sh->max_meals == -1 || sh->die_timer == -1 || sh->eat_timer == -1
+		if (sh->max_meals == 0)
+			sh->max_meals = -1;
+	}
+	if (sh->total_philos <= 0 || sh->total_philos > MAX_PHILOS
+		|| sh->max_meals == -1 || sh->die_timer <= 0 || sh->eat_timer == -1
 		|| sh->slp_timer == -1)
 		return (-1);
 	init_shared_data_mutexes(sh);
