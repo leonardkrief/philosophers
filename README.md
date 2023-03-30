@@ -16,8 +16,6 @@ The dining philosophers problem is a classic example in computer science that il
 
 [More informations](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
 
-*Tips and good methodology to do the project at the bottom of the readme*
-
 ## Installation 🖥
 
 `make` inside a __*philo*__ folder
