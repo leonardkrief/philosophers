@@ -21,13 +21,12 @@ The dining philosophers problem is a classic example in computer science that il
 `make` inside a __*philo*__ folder
 
 __usage :__
+`./philo nb_philos die_tm eat_tm sleep_tm (max_meals)`  
 
-`./philo {nb_philos} {die_tm} {eat_tm} {sleep_tm} (max_eat)`  
-`{.}` inputs are in ms and capped to 60,000 ms  
-`max_eat` argument is not required
+> `*_tm` inputs are in ms and capped to 60,000 ms  
+>`max_meals` argument is not required
 
 __example :__
-
 `./philo 4 500 200 200`
 
 > **Warning**: I had to comply to the subject's constraints so the code is not optimized.  
